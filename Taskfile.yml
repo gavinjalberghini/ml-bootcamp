@@ -1,0 +1,70 @@
+# https://taskfile.dev
+#
+# Every task runs through `uv run`, which automatically creates/syncs the
+# project virtual environment from pyproject.toml + uv.lock on first use.
+# No manual pip/venv management is needed -- just install uv and task.
+#
+# Student work lives under learning/<your_name>/. Override STUDENT when
+# running assignment tasks, e.g.:
+#   task pa1 STUDENT=alex DATA=learning/resources/data/medium.arff
+version: '3'
+
+vars:
+  STUDENT: 'student'
+  DATA: 'learning/resources/data/small.arff'
+  K: '3'
+  DISTANCE: '1' # 1=euclidean, 2=manhattan, 3=minkowski
+  P: '3.0'      # minkowski exponent, only used when DISTANCE=3
+  DATA_ABS: '{{if hasPrefix "/" .DATA}}{{.DATA}}{{else}}{{.ROOT_DIR}}/{{.DATA}}{{end}}'
+
+tasks:
+  default:
+    cmds:
+      - task: setup
+
+  setup:
+    desc: Create/sync the uv-managed virtual environment
+    cmds:
+      - uv sync
+
+  generate-stream:
+    desc: 'Regenerate drifting stream ARFF files from small.arff and medium.arff'
+    cmds:
+      - uv run python learning/resources/generate_stream.py learning/resources/data/small.arff --output learning/resources/data/small_stream.arff --length 800 --drift 400 --seed 5
+      - uv run python learning/resources/generate_stream.py learning/resources/data/medium.arff --output learning/resources/data/medium_stream.arff --length 2000 --drift 1000 --seed 5
+
+  pa1:
+    desc: 'PA1: kNN with leave-one-out validation (stdlib only)'
+    dir: learning/{{.STUDENT}}/PA1
+    cmds:
+      - uv run kNN.py {{.DATA_ABS}} --distance {{.DISTANCE}} --k {{.K}} --p {{.P}}
+
+  pa2:
+    desc: 'PA2: kNN report with per-class metrics, time, and memory usage'
+    dir: learning/{{.STUDENT}}/PA2
+    cmds:
+      - uv run kNN_report.py {{.DATA_ABS}} --distance {{.DISTANCE}} --k {{.K}} --p {{.P}}
+
+  pa3:
+    desc: 'PA3: ensemble of three kNNs with different distance metrics'
+    dir: learning/{{.STUDENT}}/PA3
+    cmds:
+      - uv run kNN_ensemble.py {{.DATA_ABS}}
+
+  pa4:
+    desc: 'PA4: GPU kNN vs CPU baseline (falls back to CPU without cupy)'
+    dir: learning/{{.STUDENT}}/PA4
+    cmds:
+      - uv run knn_gpu.py {{.DATA_ABS}} --k {{.K}}
+
+  pa4:gpu:
+    desc: 'PA4 with cupy installed (requires CUDA 12 hardware/drivers)'
+    dir: learning/{{.STUDENT}}/PA4
+    cmds:
+      - uv run --extra pa4-gpu knn_gpu.py {{.DATA_ABS}} --k {{.K}}
+
+  pa5:
+    desc: 'PA5: online sliding-window kNN on a drifting stream'
+    dir: learning/{{.STUDENT}}/PA5
+    cmds:
+      - uv run online_knn.py {{.ROOT_DIR}}/learning/resources/data/small_stream.arff --k {{.K}} --window 50

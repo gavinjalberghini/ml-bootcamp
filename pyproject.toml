@@ -1,0 +1,14 @@
+[project]
+name = "ml-bootcamp"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+# GPU support is opt-in because it requires CUDA hardware/drivers.
+# The [ctk] extra bundles CUDA toolkit headers from PyPI so no system
+# CUDA install is needed. Run with: task pa4:gpu
+pa4-gpu = ["cupy-cuda12x[ctk]>=13.0"]
+
+[tool.uv]
+package = false
