@@ -69,8 +69,7 @@ Keep the flags the skeleton already parses: `data`, `--distance {1,2,3}`,
 
 ## Stretch goal (optional)
 
-Stretch goals are extra challenge. Skip this if you want. Later tickets
-**never call** `stretch_cosine`. Leave it unimplemented.
+Skip if you want. Later tickets **never call** `stretch_cosine`.
 
 **Challenge:** Implement cosine as a separate idea of “near” on that unused
 method and write `learning/pa-knn/stretch.md`: on `small.arff`, did any

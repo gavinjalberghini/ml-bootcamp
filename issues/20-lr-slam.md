@@ -15,7 +15,7 @@ SLAM is, using vocabulary you already have. You will not implement SLAM.
    2. One or two conclusions the authors propose (2–3 sentences each).
    3. One additional article that supports or refutes a claim. IEEE
       citation.
-   4. Using ra-types's language, what kind of problem is SLAM (classification,
+   4. Using ra-types language, what kind of problem is SLAM (classification,
       regression, something else)? Where would concept drift (ra-drift) appear
       for a robot that keeps running in a changing room? Which **ideas**
       from your kNN work transfer (sliding windows, per-class metrics, GPU

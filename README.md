@@ -68,18 +68,9 @@ they want a portfolio copy.
 
 ## Git and GitHub (student workflow)
 
-Do not commit or push to `main`. Every change goes on a branch, then a pull
-request, then mentor review. Commit subjects follow Conventional Commits
-with a ticket scope, the same `type(scope):` shape used in
-[pkgxdev/pantry](https://github.com/pkgxdev/pantry):
-
-```text
-feat(pa-knn): implement leave-one-out kNN
-docs(ra-types): answer problem-type prompts
-```
-
-CI on every PR checks commit subjects (`scripts/lint_commits.py`). Details:
-[`.github/commit-convention.md`](.github/commit-convention.md).
+Do not push to `main`. Branch, PR, mentor review. Commits are
+`type(scope): description` (`.github/commit-convention.md`). CI lints
+subjects on every PR.
 
 ## Python and uv
 

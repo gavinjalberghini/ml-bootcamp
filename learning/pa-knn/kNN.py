@@ -85,10 +85,26 @@ class KNN:
     def write_report(self, path: str, settings: dict, elapsed: float, matrix) -> None:
         dest = Path(path)
         dest.parent.mkdir(parents=True, exist_ok=True)
-        lines = ['# pa-knn kNN', '', '## Settings', '']
+        lines = [f'# {type(self).__name__}', '', '## Settings', '']
         for key, value in settings.items():
             lines.append(f'- **{key}:** {value}')
-        lines.extend(['', '## Elapsed time', '', f'{elapsed:.4f} s', '', '## Confusion matrix', '', str(matrix), ''])
+        lines.extend(
+            [
+                '',
+                '## Elapsed time',
+                '',
+                f'{elapsed:.4f} s',
+                '',
+                '## Confusion matrix',
+                '',
+                str(matrix),
+                '',
+                '## Discussion',
+                '',
+                '(tie-break rule and any notes)',
+                '',
+            ]
+        )
         dest.write_text('\n'.join(lines))
 
 

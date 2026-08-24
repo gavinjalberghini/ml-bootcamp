@@ -18,13 +18,12 @@ installs it for this script only. Do not `pip install` it yourself.
    predict the most frequent class in the *other* rows (leave-one-out
    majority) or, if you document it, the global majority. Return
    `(y_true, y_pred)`.
-3. Implement `metrics_report(y_true, y_pred)` from the confusion matrix:
-   - overall accuracy
-   - macro-averaged precision, recall, F1
-   - weighted-averaged precision, recall, F1
-   - per class: precision, recall, F1, support, sensitivity (recall),
-     specificity (TN/(TN+FP) in that class's one-vs-rest view)
-   If a class has zero predicted positives, precision is 0. State that.
+3. Implement `metrics_report(y_true, y_pred)` from the confusion matrix.
+   Return a dict that includes at least `accuracy`, `macro_f1`,
+   `weighted_f1`, and a per-class structure with precision, recall, F1,
+   support, sensitivity (recall), and specificity
+   (`TN/(TN+FP)` one-vs-rest). Later tickets read `macro_f1`. If a class
+   has zero predicted positives, precision is 0. State that.
 4. Implement `peak_memory_bytes` (`resource.getrusage` or
    `/proc/self/status` on Linux).
 5. Implement `write_figures`: a labeled confusion heatmap and a per-class

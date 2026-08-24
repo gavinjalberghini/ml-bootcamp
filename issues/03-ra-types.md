@@ -15,7 +15,7 @@ are categories, not numeric targets.
 3. Read [classification (IBM)](https://www.ibm.com/topics/classification-machine-learning).
 4. Read [types of classification tasks](https://machinelearningmastery.com/types-of-classification-in-machine-learning/).
 5. Skim the [scikit-learn multiclass / multilabel notes](https://scikit-learn.org/stable/modules/multiclass.html)
-   for problem types only. You will not use that library in the PAs.
+   for problem types only. You will not use that library.
 6. Open `learning/ra-types/answers.md`. Write an answer under each heading:
    - How does classification differ from regression?
    - What distinguishes multiclass from multilabel?
@@ -31,8 +31,7 @@ are categories, not numeric targets.
 
 ## Stretch goal (optional)
 
-Stretch goals are extra challenge. Skip this if you want. Later tickets
-never read this heading.
+Skip if you want. Later tickets never read this heading.
 
 **Challenge:** Find one real **multilabel** dataset (name it and link it).
 In `learning/ra-types/answers.md` under “Stretch goal”, say how a kNN would have

@@ -1,7 +1,6 @@
 # [taskfile] Install Task and write a Taskfile
 
-You need: [git](00-git.md) and [uv](01-uv.md) done. `uv run learning/uv/hello.py`
-works.
+You need: git and uv done. `uv run learning/uv/hello.py` works.
 
 You will: install [Task](https://taskfile.dev/), read the repo’s root
 `Taskfile.yml`, and write a **small Taskfile of your own**. Do not edit the
@@ -39,9 +38,9 @@ root `Taskfile.yml`. Later tickets call those task names (`knn`, `scaled`,
    `version: '3'`. Implement the required tasks (sudo comments are sketches,
    not copy-paste YAML):
    - `hello` — print exactly `hello from task`
-   - `echo-vars` — print the `WHO` variable (default `student`). Someone
-     else must be able to run `task echo-vars WHO=yourname` and see that
-     value.
+   - `echo-vars` — print the `WHO` variable (default `student`).
+     `task --taskfile learning/taskfile/Taskfile.yml echo-vars WHO=mentor`
+     must print `mentor`.
 6. From the repo root run:
 
    ```bash
@@ -83,14 +82,11 @@ root tasks.
 
 ## Stretch goal (optional)
 
-Stretch goals are extra challenge. Skip this if you want. Do not change
-the root `Taskfile.yml` for this.
+Skip if you want. Do not edit the root `Taskfile.yml`.
 
-**Challenge:** In `learning/taskfile/Taskfile.yml` add a `wrap-uv` task that
-runs `uv run` on `learning/uv/hello.py` using a repo-root path (so it works
-no matter what your current directory is). Write what you did in
-`learning/taskfile/stretch.md`. `task taskfile` must still only need
-`hello`.
+**Challenge:** Add a `wrap-uv` task that `uv run`s `learning/uv/hello.py`
+from a repo-root path. Write `learning/taskfile/stretch.md`. `task taskfile`
+must still only need `hello`.
 
 ## Acceptance criteria
 
@@ -100,7 +96,7 @@ no matter what your current directory is). Write what you did in
 - `echo-vars` prints `student` by default and honors `WHO=…`.
 - The root `Taskfile.yml` is unchanged.
 - `learning/taskfile/notes.md` answers the prompts.
-- Stretch is optional. Skipping it does not block [ra-types](03-ra-types.md).
+- Stretch is optional. Skipping it does not block ra-types.
 
 ## References
 

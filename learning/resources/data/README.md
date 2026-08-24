@@ -73,7 +73,7 @@ and pa-scaled exist because of it.
 ## `large.arff`
 
 Same schema and class proportions as `medium.arff`, expanded to 19592
-instances. Use it as a stress set for timing, memory, and pa-gpu GPU comparison.
+instances. Use it as a stress set for timing, memory, and pa-gpu.
 Leave-one-out on this file is expensive; a subsample or a holdout is fine
 unless a ticket says otherwise.
 
@@ -87,9 +87,7 @@ file for seed, drift index, weights, and the label map.
 
 ## Binary task (pa-scaled)
 
-When a ticket asks for a binary view of the same files:
+`--task binary` recodes labels to `0` / `1` (see that ticket):
 
-- `small.arff`: keep only classes `0` and `1` (the two most frequent sites),
-  or treat `0` as the positive class and every other label as `not-0`
-  (one-vs-rest). The assignment says which.
-- `medium.arff`: map quality `<= 5` to `low` and quality `>= 6` to `high`.
+- `small.arff`: class `0` stays `0`; every other class becomes `1`.
+- `medium.arff` / `large.arff`: quality `<= 5` → `0` (low), `>= 6` → `1` (high).

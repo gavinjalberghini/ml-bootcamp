@@ -33,6 +33,6 @@ add `--weighted-vote` on the class you already have.
 
 ## Stretch goal (optional)
 
-**Challenge:** Invent a 2×2 cost matrix for wine `low` vs `high` (binary
-task from pa-scaled) in `learning/ra-cost/answers.md` under “Stretch goal”. Do not
-require pa-online to read that matrix.
+**Challenge:** Invent a 2×2 cost matrix for wine binary (`0` low vs `1` high)
+in `learning/ra-cost/answers.md` under “Stretch goal”. Do not require
+pa-online to read that matrix.
