@@ -20,6 +20,7 @@ breaks them.
   `<slug>/<short-topic>`:
   - `git/setup`
   - `uv/hello`
+  - `taskfile/setup`
   - `pa-knn/leave-one-out`
   - `ra-types/answers`
 - Do not reuse a finished branch for the next assignment.

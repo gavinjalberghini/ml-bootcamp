@@ -34,6 +34,7 @@ Use the ticket slug, or one of the shared scopes:
 ```text
 git
 uv
+taskfile
 pa-knn
 pa-scaled
 pa-metrics
@@ -67,6 +68,7 @@ Imperative mood, no trailing period: `implement leave-one-out`, not
 ```text
 docs(git): fill in the learning log
 feat(uv): run hello.py with in-file metadata
+feat(taskfile): add hello and echo-vars tasks
 docs(ra-types): answer classification prompts
 feat(pa-knn): implement leave-one-out kNN
 fix(pa-knn): exclude the query row from the pool

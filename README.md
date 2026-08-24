@@ -88,16 +88,18 @@ venv. Each `learning/<slug>/…py` file starts with a [PEP 723](https://peps.pyt
 header. `uv run that_file.py` reads **that file's** `requires-python` and
 `dependencies`. There is nothing to activate.
 
-Install Python 3.10+ and uv in the [uv](issues/01-uv.md) ticket (after
-[git](issues/00-git.md)). Then:
+Install Python 3.10+ and uv in the [uv](issues/01-uv.md) ticket, then Task
+in the [taskfile](issues/02-taskfile.md) ticket. Then:
 
 ```bash
 uv run learning/uv/hello.py
-uv run learning/pa-knn/kNN.py learning/resources/data/small.arff
+task uv
+task knn
 ```
 
-[Task](https://taskfile.dev/installation/) is optional sugar (`task knn`
-is the same `uv run`).
+`task knn` is the same `uv run` with the flags from the root `Taskfile.yml`.
+Students write their own Taskfile under `learning/taskfile/`; they do not
+edit the root file.
 
 Third-party packages are declared in the file that uses them (matplotlib in
 `pa-metrics` / `pa-selection`; optional CuPy in `pa-gpu`'s header). Importing
@@ -146,27 +148,29 @@ Do them in **table order**. The slug is the ID.
 | --- | --- | --- |
 | [git](issues/00-git.md) | `learning/README.md` | first PR, review loop |
 | [uv](issues/01-uv.md) | `learning/uv/` | uv + in-file deps |
-| [ra-types](issues/02-ra-types.md) | `learning/ra-types/answers.md` | problem types for these files |
-| [pa-knn](issues/03-pa-knn.md) | `learning/pa-knn/kNN.py` | class `KNN`, leave-one-out |
-| [ra-scaling](issues/04-ra-scaling.md) | `learning/ra-scaling/answers.md` | why scale, how not to leak |
-| [pa-scaled](issues/05-pa-scaled.md) | `learning/pa-scaled/kNN_scaled.py` | `ScaledKNN`, `--normalize`, `--task` |
-| [pa-metrics](issues/06-pa-metrics.md) | `learning/pa-metrics/kNN_report.py` | `ReportingKNN`, baseline, plots |
-| [ra-selection](issues/07-ra-selection.md) | `learning/ra-selection/answers.md` | validation vs test |
-| [pa-selection](issues/08-pa-selection.md) | `learning/pa-selection/kNN_select.py` | `k` sweep, vote fractions |
-| [ra-ensembles](issues/09-ra-ensembles.md) | `learning/ra-ensembles/answers.md` | bagging vs boosting |
-| [pa-ensemble](issues/10-pa-ensemble.md) | `learning/pa-ensemble/kNN_ensemble.py` | bagged `ScaledKNN` |
-| [ra-streaming](issues/11-ra-streaming.md) | `learning/ra-streaming/answers.md` | batch vs stream |
-| [ra-hardware](issues/12-ra-hardware.md) | `learning/ra-hardware/answers.md` | what to put on a GPU |
-| [pa-gpu](issues/13-pa-gpu.md) | `learning/pa-gpu/knn_gpu.py` | array / GPU `leave_one_out` |
-| [ra-drift](issues/14-ra-drift.md) | `learning/ra-drift/answers.md` | drift + prequential |
-| [ra-imbalance](issues/15-ra-imbalance.md) | `learning/ra-imbalance/answers.md` | imbalance that moves |
-| [ra-cost](issues/16-ra-cost.md) | `learning/ra-cost/answers.md` | weighted `vote` |
-| [pa-online](issues/17-pa-online.md) | `learning/pa-online/online_knn.py` | window + `--weighted-vote` |
-| [lr-jetson](issues/18-lr-jetson.md) | `learning/lr-jetson/AI_Jetson_Survey.md` | edge literature |
-| [lr-slam](issues/19-lr-slam.md) | `learning/lr-slam/ROS_Jetson_SLAM.md` | SLAM vs classification |
+| [taskfile](issues/02-taskfile.md) | `learning/taskfile/` | Task install + a small Taskfile |
+| [ra-types](issues/03-ra-types.md) | `learning/ra-types/answers.md` | problem types for these files |
+| [pa-knn](issues/04-pa-knn.md) | `learning/pa-knn/kNN.py` | class `KNN`, leave-one-out |
+| [ra-scaling](issues/05-ra-scaling.md) | `learning/ra-scaling/answers.md` | why scale, how not to leak |
+| [pa-scaled](issues/06-pa-scaled.md) | `learning/pa-scaled/kNN_scaled.py` | `ScaledKNN`, `--normalize`, `--task` |
+| [pa-metrics](issues/07-pa-metrics.md) | `learning/pa-metrics/kNN_report.py` | `ReportingKNN`, baseline, plots |
+| [ra-selection](issues/08-ra-selection.md) | `learning/ra-selection/answers.md` | validation vs test |
+| [pa-selection](issues/09-pa-selection.md) | `learning/pa-selection/kNN_select.py` | `k` sweep, vote fractions |
+| [ra-ensembles](issues/10-ra-ensembles.md) | `learning/ra-ensembles/answers.md` | bagging vs boosting |
+| [pa-ensemble](issues/11-pa-ensemble.md) | `learning/pa-ensemble/kNN_ensemble.py` | bagged `ScaledKNN` |
+| [ra-streaming](issues/12-ra-streaming.md) | `learning/ra-streaming/answers.md` | batch vs stream |
+| [ra-hardware](issues/13-ra-hardware.md) | `learning/ra-hardware/answers.md` | what to put on a GPU |
+| [pa-gpu](issues/14-pa-gpu.md) | `learning/pa-gpu/knn_gpu.py` | array / GPU `leave_one_out` |
+| [ra-drift](issues/15-ra-drift.md) | `learning/ra-drift/answers.md` | drift + prequential |
+| [ra-imbalance](issues/16-ra-imbalance.md) | `learning/ra-imbalance/answers.md` | imbalance that moves |
+| [ra-cost](issues/17-ra-cost.md) | `learning/ra-cost/answers.md` | weighted `vote` |
+| [pa-online](issues/18-pa-online.md) | `learning/pa-online/online_knn.py` | window + `--weighted-vote` |
+| [lr-jetson](issues/19-lr-jetson.md) | `learning/lr-jetson/AI_Jetson_Survey.md` | edge literature |
+| [lr-slam](issues/20-lr-slam.md) | `learning/lr-slam/ROS_Jetson_SLAM.md` | SLAM vs classification |
 
 ```bash
 task uv
+task taskfile
 task knn
 task scaled NORMALIZE=zscore TASK=binary
 task metrics

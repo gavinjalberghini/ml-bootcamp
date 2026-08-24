@@ -1,7 +1,7 @@
 # [pa-knn] Implement kNN on Stationary Data
 
-You need: ra-types done. `uv run learning/uv/hello.py` works. You have read
-`learning/resources/data/README.md`.
+You need: ra-types done. `uv run learning/uv/hello.py` works. `task --list`
+works. You have read `learning/resources/data/README.md`.
 
 You will: implement a **class** `KNN` in `learning/pa-knn/kNN.py`. Later tickets
 import that class. Do not use scikit-learn or any other ML library. Stdlib

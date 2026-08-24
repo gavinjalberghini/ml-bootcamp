@@ -1,6 +1,7 @@
 # [ra-types] Types of Machine Learning Problems
 
-You need: uv done (`uv run` works). You have not written a classifier yet.
+You need: uv and taskfile done (`uv run` and `task --list` work). You have
+not written a classifier yet.
 
 You will: learn which prediction problem these files are, so pa-knn is not a
 guess. The datasets are classification. They are not multilabel. Class codes

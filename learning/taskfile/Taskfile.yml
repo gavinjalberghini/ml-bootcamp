@@ -1,0 +1,23 @@
+# Student Taskfile for the taskfile ticket.
+# Do not copy this into the repo root. The root Taskfile.yml is provided.
+version: '3'
+
+vars:
+  WHO: 'student'
+
+tasks:
+  default:
+    cmds:
+      - task: hello
+
+  hello:
+    desc: 'print exactly: hello from task'
+    cmds:
+      # sudo: one echo; the ticket says what the line must be
+      - echo 'replace me'
+
+  echo-vars:
+    desc: 'print WHO; override with WHO=yourname'
+    cmds:
+      # sudo: print the WHO var so a caller can override it
+      - echo 'replace me'

@@ -21,6 +21,7 @@ TYPES = ('feat', 'fix', 'docs', 'chore', 'test', 'refactor', 'style')
 SCOPES = (
     'git',
     'uv',
+    'taskfile',
     'pa-knn',
     'pa-scaled',
     'pa-metrics',
@@ -133,6 +134,7 @@ def lint_range(base: str, head: str) -> int:
 def self_test() -> int:
     cases = [
         ('feat(pa-knn): implement leave-one-out kNN', None),
+        ('feat(taskfile): add hello and echo-vars tasks', None),
         ('docs(git): fill in the learning log', None),
         ('fix(pa-scaled): fit z-score on the pool only', None),
         ('Merge branch \'git/setup\'', None),

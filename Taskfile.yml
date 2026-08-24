@@ -30,6 +30,11 @@ tasks:
     cmds:
       - uv run {{.ROOT_DIR}}/learning/uv/hello.py
 
+  taskfile:
+    desc: 'taskfile ticket: run the student Taskfile hello'
+    cmds:
+      - task --taskfile {{.ROOT_DIR}}/learning/taskfile/Taskfile.yml hello
+
   generate-stream:
     desc: 'Regenerate drifting stream ARFF files'
     cmds:
