@@ -37,14 +37,24 @@ tasks:
       - uv run {{.ROOT_DIR}}/learning/resources/generate_stream.py {{.ROOT_DIR}}/learning/resources/data/medium.arff --output {{.ROOT_DIR}}/learning/resources/data/medium_stream.arff --length 2000 --drift 1000 --seed 5
 
   issues:
-    desc: 'Create GitHub issues from issues/*.md (requires gh auth)'
+    desc: 'Mentor: create GitHub issues from issues/*.md'
     cmds:
-      - uv run {{.ROOT_DIR}}/scripts/create_issues.py
+      - python3 {{.ROOT_DIR}}/scripts/create_issues.py {{.CLI_ARGS}}
 
   github-rules:
-    desc: 'Apply main-branch ruleset (no direct push; PRs need review)'
+    desc: 'Mentor: apply per-repo main protection'
     cmds:
-      - uv run {{.ROOT_DIR}}/scripts/setup_github_rules.py
+      - python3 {{.ROOT_DIR}}/scripts/setup_github_rules.py {{.CLI_ARGS}}
+
+  org-rules:
+    desc: 'Mentor: apply org ruleset for ml-bootcamp-* repos'
+    cmds:
+      - python3 {{.ROOT_DIR}}/scripts/setup_org_rules.py {{.CLI_ARGS}}
+
+  deploy:
+    desc: 'Mentor: create a student repo in the org'
+    cmds:
+      - python3 {{.ROOT_DIR}}/scripts/deploy_student.py {{.CLI_ARGS}}
 
   lint-commits:
     desc: 'Check commit subjects from origin/main to HEAD'

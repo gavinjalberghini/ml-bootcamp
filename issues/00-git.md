@@ -1,10 +1,12 @@
-# [git] Own This Repository
+# [git] The Review Loop
 
-You need: a GitHub account and Git installed.
+You need: a GitHub account, Git installed, and the invite your mentor sent
+to a repository in their organization.
 
-You will: clone **this** repository (your copy of the template), set up the
-branch and commit rules this mentorship uses, prove the review loop works,
-and stop. Do not start `pa-knn` yet. The next ticket installs Python and uv.
+You will: accept that invite, clone **your** assigned repo, prove the
+review loop works, and stop. You do not own this repository and you do not
+change its settings. Do not start `pa-knn` yet. The next ticket installs
+Python and uv.
 
 ## Rules you will follow on every later ticket
 
@@ -13,7 +15,7 @@ breaks them.
 
 ### Branches
 
-- Never commit, push, or merge directly to `main`.
+- Never commit, push, or merge directly to `main`. GitHub will block it.
 - One branch per ticket (or per focused follow-up). Name it
   `<slug>/<short-topic>`:
   - `git/setup`
@@ -61,39 +63,42 @@ scope. Full list: [`.github/commit-convention.md`](../.github/commit-convention.
 ## Steps
 
 1. Install Git if `git --version` fails: [installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
-2. Clone **this** repository, not the upstream template. Use the GitHub URL
-   of the repo that was created for you.
-3. Install the [GitHub CLI](https://cli.github.com/) and run `gh auth login`
-   so later tickets can open PRs and apply rules. GitHub rejects account
-   passwords on the command line; use `gh` or a
-   [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
-4. Invite your mentor as a collaborator with **Write** access
-   (Settings → Collaborators). They need that role to approve PRs.
-5. Apply the `main` protection rules (blocks direct pushes; PRs need one
-   approving review). The script is stdlib-only; you do not need uv yet:
+2. Accept the GitHub invitation your mentor sent (email, or
+   [github.com/notifications](https://github.com/notifications)). You should
+   have **Write** access to a repo named like `ml-bootcamp-<you>` in their
+   org. If you cannot see it, ask them — do not create your own copy.
+3. Clone **that** repository. Use the URL they gave you, not this file’s
+   upstream source.
 
    ```bash
-   python3 scripts/setup_github_rules.py
+   git clone https://github.com/ORG/ml-bootcamp-YOURLOGIN.git
+   cd ml-bootcamp-YOURLOGIN
    ```
 
-   After the [uv](01-uv.md) ticket you can use `task github-rules` instead.
-   You must be the repo owner or an admin. If the API call fails, set the
-   same rules in the GitHub UI (Settings → Rules → Rulesets, or Branches):
-   no direct push to `main`, pull request required, one approving review,
-   do not allow administrators to bypass.
-6. Create a branch named `git/setup`.
-7. Open `learning/README.md`. Fill in your name, a short background
+4. Optional but useful: install the [GitHub CLI](https://cli.github.com/)
+   and run `gh auth login` so you can open PRs from the terminal. You can
+   also open PRs in the GitHub website. GitHub rejects account passwords on
+   the command line; use `gh` or a
+   [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+   that you keep for yourself. Do not send a token to your mentor.
+5. Create a branch named `git/setup`.
+6. Open `learning/README.md`. Fill in your name, a short background
    (coursework, languages, anything you already know about ML), and what you
    want to learn.
-8. Commit that file with a conventional message:
+7. Commit that file with a conventional message:
 
    ```bash
    git add learning/README.md
    git commit -m "docs(git): fill in the learning log"
    ```
 
-9. Push the branch and open a pull request into `main`. Ask your mentor to
+8. Push the branch and open a pull request into `main`. Ask your mentor to
    review it. Do not merge until they approve.
+
+   ```bash
+   git push -u origin git/setup
+   gh pr create
+   ```
 
 Later assignments use the same pattern: one slug-named branch, conventional
 commits, one focused diff, one PR, mentor review.
@@ -101,9 +106,6 @@ commits, one focused diff, one PR, mentor review.
 ## What to turn in
 
 - A pull request that adds your filled-in `learning/README.md`.
-- Evidence that `main` is protected (the rules script succeeded, or a
-  screenshot / `gh` output in the PR description if the API call failed and
-  you set the same rules in the GitHub UI).
 
 ## Stretch goal (optional)
 
@@ -120,8 +122,6 @@ used Git. No extra tools required.
 - The PR is open against `main` from a `git/…` branch, not from `main`.
 - The README contains your name, background, and learning goals.
 - Commit subjects on the PR match `type(scope): description`.
-- The mentor is a collaborator, and `main` requires a pull request plus one
-  approving review (script or equivalent UI settings).
 - You can clone, branch, commit, push, and open a PR without help.
 - Stretch is optional. Skipping it does not block [uv](01-uv.md).
 

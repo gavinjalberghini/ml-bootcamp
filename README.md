@@ -1,17 +1,72 @@
 # ML Bootcamp
 
-Template repository for a mentorship in applied machine learning classification.
-Each student gets their own copy of this repo and owns it: the issues, the
-branches, and the pull requests. Work happens under `learning/`. Shared data
-and tooling live in `learning/resources/`.
+Source content for a mentorship in applied machine learning classification.
+Mentors instantiate a **student repo inside a GitHub organization they own**.
+Students do not own the repo and do not hand over a PAT.
 
-kNN is the only algorithm you implement. Each programming assignment **imports
-the previous class** and adds one facet. Fix a bug where you introduced it.
+If you are the student: accept the org invite, then open the
+[git](issues/00-git.md) issue. Work happens under `learning/`.
+
+kNN is the only algorithm students implement. Each programming assignment
+**imports the previous class** and adds one facet.
 
 Tickets use **slugs** that match folders and Task names: `pa-knn`,
 `ra-scaling`, `lr-jetson`. Table order is learning order.
 
-## Git and GitHub
+## Mentor: one-time org setup
+
+1. Create a GitHub organization (free orgs can hold private repos).
+2. Keep this repository as the source of truth. You can leave it on your
+   user account or move it into the org as `ml-bootcamp` (not
+   `ml-bootcamp-*`).
+3. Install the [GitHub CLI](https://cli.github.com/) and `gh auth login` as
+   an **org owner**.
+4. Apply the org ruleset so every student repo requires a reviewed PR into
+   `main`. Org owners can still push (so deploy works):
+
+   ```bash
+   python3 scripts/setup_org_rules.py --org YOUR_ORG
+   ```
+
+   The ruleset matches `ml-bootcamp-*` and skips `ml-bootcamp`.
+
+Give students **Write** on their repo only, not Admin and not org Owner.
+Invite them as an outside collaborator, or as an org member with no default
+repository access.
+
+## Mentor: instantiate a student
+
+From a clone of this source repo, after `gh auth login`:
+
+```bash
+python3 scripts/deploy_student.py --org YOUR_ORG --student github-login
+```
+
+That command:
+
+1. Creates `YOUR_ORG/ml-bootcamp-<login>` (private by default).
+2. Pushes this source tree to that repo’s `main`.
+3. Invites the student with **Write**.
+4. Opens one GitHub issue per file in `issues/` (filename order).
+5. Applies per-repo `main` protection (backup for the org ruleset).
+
+Optional flags: `--public`, `--name other-repo`, `--ref main`,
+`--org-member`, `--dry-run`. Re-running skips existing issues and does not
+overwrite student commits unless you pass `--force-source`.
+
+```bash
+export ML_BOOTCAMP_ORG=YOUR_ORG
+task deploy -- --student github-login
+task org-rules
+```
+
+Tell the student the repo URL and that they should start at the **git**
+issue. You already have access; they open PRs, you review.
+
+At the end of the mentorship they can fork the repo to their account if
+they want a portfolio copy.
+
+## Git and GitHub (student workflow)
 
 Do not commit or push to `main`. Every change goes on a branch, then a pull
 request, then mentor review. Commit subjects follow Conventional Commits
@@ -21,14 +76,6 @@ with a ticket scope, the same `type(scope):` shape used in
 ```text
 feat(pa-knn): implement leave-one-out kNN
 docs(ra-types): answer problem-type prompts
-```
-
-The first ticket ([git](issues/00-git.md)) walks through branch names, the
-message format, and applying repo rules so GitHub rejects direct pushes to
-`main` and requires one approving review. After that:
-
-```bash
-task github-rules
 ```
 
 CI on every PR checks commit subjects (`scripts/lint_commits.py`). Details:
@@ -97,7 +144,7 @@ Do them in **table order**. The slug is the ID.
 
 | Ticket | Path | You leave behind |
 | --- | --- | --- |
-| [git](issues/00-git.md) | `learning/README.md` | owned repo, first PR, branch rules |
+| [git](issues/00-git.md) | `learning/README.md` | first PR, review loop |
 | [uv](issues/01-uv.md) | `learning/uv/` | uv + in-file deps |
 | [ra-types](issues/02-ra-types.md) | `learning/ra-types/answers.md` | problem types for these files |
 | [pa-knn](issues/03-pa-knn.md) | `learning/pa-knn/kNN.py` | class `KNN`, leave-one-out |
@@ -149,30 +196,12 @@ See `learning/resources/data/README.md`.
 (`task generate-stream`). Header comments document seed, drift index,
 weights, and the label map.
 
-## Using this as a GitHub template
+## Mentors: reviewing work
 
-1. Mark this repository as a template (Settings → Template repository).
-2. Create a new repository from the template for the mentee. They are the owner.
-3. They start at [git](issues/00-git.md), then [uv](issues/01-uv.md).
-4. Recreate issues in the mentee repo with:
-
-```bash
-gh auth login
-uv run scripts/create_issues.py
-```
-
-Issues are created in filename order, which matches the table.
-
-## Mentors
-
-Tickets are numbered procedures. After each PR, check that the new class
+Tickets are procedures. After each PR, check that the new class
 **subclasses** the previous one and did not paste a second distance function.
 Common failures: query row in leave-one-out, scaler fit on the whole file,
 accuracy-only reports, unscaled wine distances, copying `pa-knn` instead of
 `import_pa`. Stretch goals are optional; do not block a PR that skipped
 them. Do block a PR that broke the required class API in order to attempt
 one.
-
-Ask the student to add you as a collaborator (Write) and to run
-`task github-rules` once so `main` cannot be updated except through a
-reviewed PR.

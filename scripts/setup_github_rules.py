@@ -3,24 +3,25 @@
 # requires-python = ">=3.10"
 # dependencies = []
 # ///
-"""Protect main: no direct push; pull requests need one approving review.
+"""Protect a student repo's main: no direct push; PRs need one approving review.
 
-Uses the GitHub CLI (`gh auth login` first). Idempotent: updates the
-existing `protect-main` ruleset when it is already there, and also applies
-classic branch protection with `enforce_admins` so the repo owner cannot
-bypass the rule.
+Mentor-only. Students have Write, not Admin, so they cannot change these
+rules. Org owners can still push (needed for deploy). Prefer
+`setup_org_rules.py` once per org; this script is the per-repo backup.
 
-Usage (from the repo root):
-    python3 scripts/setup_github_rules.py
-    python3 scripts/setup_github_rules.py --repo owner/name
-    python3 scripts/setup_github_rules.py --dry-run
+Usage:
+    python3 scripts/setup_github_rules.py --repo org/ml-bootcamp-jane
+    python3 scripts/setup_github_rules.py --repo org/ml-bootcamp-jane --dry-run
 """
 from __future__ import annotations
 
 import argparse
 import json
-import subprocess
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gh_api import gh_json
 
 RULESET_NAME = 'protect-main'
 
@@ -54,9 +55,11 @@ RULESET_BODY = {
     ],
 }
 
+# Students are Write, not Admin. Leave enforce_admins off so org owners can
+# still push the first main (and hotfixes) without a student approval.
 CLASSIC_PROTECTION = {
     'required_status_checks': None,
-    'enforce_admins': True,
+    'enforce_admins': False,
     'required_pull_request_reviews': {
         'dismiss_stale_reviews': True,
         'require_code_owner_reviews': False,
@@ -73,26 +76,13 @@ CLASSIC_PROTECTION = {
 }
 
 
-def gh_json(args: list[str], input_obj=None):
-    cmd = ['gh', 'api', *args]
-    payload = None if input_obj is None else json.dumps(input_obj)
-    result = subprocess.run(cmd, text=True, capture_output=True, input=payload)
-    if result.returncode != 0:
-        return None, result.stderr.strip() or result.stdout.strip()
-    text = result.stdout.strip()
-    if not text:
-        return {}, None
-    try:
-        return json.loads(text), None
-    except json.JSONDecodeError:
-        return text, None
-
-
 def repo_info(repo: str | None):
     cmd = ['gh', 'repo', 'view']
     if repo:
         cmd.append(repo)
     cmd.extend(['--json', 'nameWithOwner,defaultBranchRef'])
+    import subprocess
+
     result = subprocess.run(cmd, text=True, capture_output=True)
     if result.returncode != 0:
         raise SystemExit(result.stderr or 'gh repo view failed; run gh auth login')
@@ -141,7 +131,25 @@ def apply_classic(owner_repo: str, branch: str, dry_run: bool) -> str:
     _, err = gh_json(['-X', 'PUT', path, '--input', '-'], CLASSIC_PROTECTION)
     if err:
         return f'skip classic protection ({err})'
-    return f'applied classic protection on {branch} (enforce_admins, 1 review)'
+    return f'applied classic protection on {branch} (1 review; admins may push)'
+
+
+def run(repo: str | None = None, dry_run: bool = False) -> list[str]:
+    if dry_run and repo:
+        RULESET_BODY['conditions']['ref_name']['include'] = ['refs/heads/main']
+        return [
+            f'repo: {repo} (dry-run)',
+            apply_ruleset(repo, True),
+            apply_classic(repo, 'main', True),
+        ]
+    owner_repo, default_branch = repo_info(repo)
+    lines = [f'repo: {owner_repo} (default branch {default_branch})']
+    if default_branch != 'main':
+        RULESET_BODY['conditions']['ref_name']['include'] = [f'refs/heads/{default_branch}']
+        lines.append(f'note: protecting {default_branch}, not main')
+    lines.append(apply_ruleset(owner_repo, dry_run))
+    lines.append(apply_classic(owner_repo, default_branch, dry_run))
+    return lines
 
 
 def main() -> int:
@@ -149,17 +157,10 @@ def main() -> int:
     parser.add_argument('--repo', help='owner/name (defaults to the current gh repo)')
     parser.add_argument('--dry-run', action='store_true')
     args = parser.parse_args()
-
-    owner_repo, default_branch = repo_info(args.repo)
-    print(f'repo: {owner_repo} (default branch {default_branch})')
-    if default_branch != 'main':
-        RULESET_BODY['conditions']['ref_name']['include'] = [f'refs/heads/{default_branch}']
-        print(f'note: protecting {default_branch}, not main')
-
-    print(apply_ruleset(owner_repo, args.dry_run))
-    print(apply_classic(owner_repo, default_branch, args.dry_run))
+    for line in run(repo=args.repo, dry_run=args.dry_run):
+        print(line)
     print(
-        'main (or the default branch) should now reject direct pushes and '
+        'main should reject direct pushes from Write collaborators and '
         'require a pull request with one approving review.'
     )
     return 0
