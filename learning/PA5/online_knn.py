@@ -31,11 +31,28 @@ class OnlineKNN(PA6.ScaledKNN):
         self.weighted_vote = weighted_vote
 
     def vote(self, neighbor_labels: list, neighbor_weights: list | None = None) -> str:
+        # sudo:
+        #   if weights are off: same majority as PA1
+        #   if weights are on: a rare class in the window counts for more
+        #   (rare := inverse of how often that class sits in the window)
         raise NotImplementedError('uniform majority, or inverse-frequency weights when flagged')
 
     def run_stream(self, features, labels):
         """Prequential: predict, then append; drop the oldest when over window."""
+        # sudo:
+        #   walk the file in order
+        #   first: guess, using only what is already in the window
+        #   then: add the new row and its true label
+        #   if the window is too long, forget the oldest row
+        #   never keep the whole stream
         raise NotImplementedError
+
+    def stretch_drift_alarm(self, rolling_accuracy) -> list:
+        """Optional stretch. Later tickets never call this."""
+        # sudo:
+        #   watch a running accuracy
+        #   mark times where it falls hard, without being told the drift index
+        raise NotImplementedError('optional stretch — skip unless you want the challenge')
 
 
 def parse_args():

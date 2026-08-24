@@ -15,7 +15,7 @@ Do not use `uv sync --extra`.
 ## Steps
 
 1. Open `learning/PA4/knn_gpu.py`. Keep `import_pa('PA6')` and
-   `class GpuKNN(PA6.ScaledKNN)`.
+   `class GpuKNN(PA6.ScaledKNN)`. Required methods have sudo comments.
 2. Implement `array_module()`: return `cupy` if it imports, else a CPU
    array library or a documented fallback.
 3. Implement `pairwise_distances(queries, pool, xp)` as broadcast or matrix
@@ -50,6 +50,13 @@ Do not use `uv sync --extra`.
 - `small.arff` predictions match PA6 within floating-point noise.
 - Findings say whether CuPy was in the script header and what `uv run`
   installed.
+- Stretch is optional. Skipping `stretch_timing_breakdown` does not block RA5.
+
+## Stretch goal (optional)
+
+**Challenge:** Time copy vs distance vs vote on
+`stretch_timing_breakdown` and write `learning/PA4/stretch.md`. Do not
+change the required `leave_one_out` contract.
 
 ## References
 

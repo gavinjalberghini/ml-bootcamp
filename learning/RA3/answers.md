@@ -9,3 +9,6 @@
 ## How might sampling strategies impact kNN (including leave-one-out scores)?
 
 ## If you subsample `medium.arff` or `large.arff`, what does stratified sampling preserve that a file prefix would not?
+
+## Stretch goal (optional)
+

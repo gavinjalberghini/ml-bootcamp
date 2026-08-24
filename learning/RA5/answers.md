@@ -11,3 +11,6 @@
 ## How could you detect drift if you were not told the drift point?
 
 ## Is the provided stream-file drift real, virtual, or both? Why?
+
+## Stretch goal (optional)
+

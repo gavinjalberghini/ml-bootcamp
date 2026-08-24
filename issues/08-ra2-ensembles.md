@@ -31,6 +31,13 @@ has no trainable weights to boost.
 - Every heading has an answer.
 - You can describe, in one paragraph, the bagging loop PA3 will run on
   `ScaledKNN`.
+- Stretch is optional. Skipping it does not block PA3.
+
+## Stretch goal (optional)
+
+**Challenge:** In `learning/RA2/answers.md` under “Stretch goal”, explain
+why stacking is a poor first extra for *this* kNN (no learned weights, LOO
+cost). Do not implement stacking.
 
 ## Optional research
 

@@ -25,11 +25,29 @@ class EnsembleKNN(PA6.ScaledKNN):
 
     def bagged_loo(self, features, labels, members: int, seed: int):
         """Return ensemble preds and per-member preds."""
+        # sudo:
+        #   for each query row i
+        #       pool := every row except i
+        #       for each member
+        #           draw a same-size pile from the pool, with repeats allowed
+        #           ask ScaledKNN.predict_one on that pile
+        #       ensemble guess := vote over members
+        #   also keep each member's guesses so you can see if they disagree
         raise NotImplementedError('bootstrap sample the leave-one-out pool')
 
     def distance_committee_loo(self, features, labels):
         """Euclidean + Manhattan + Minkowski majority vote, each a ScaledKNN."""
+        # sudo:
+        #   three siblings, three notions of "near"
+        #   each sibling sees the same leave-one-out pool
+        #   final guess := vote of the three
         raise NotImplementedError
+
+    def stretch_feature_subspace(self, features, labels, members: int, seed: int):
+        """Optional stretch. Later tickets never call this."""
+        # sudo:
+        #   same bagging idea, but each member also sees only some of the columns
+        raise NotImplementedError('optional stretch — skip unless you want the challenge')
 
 
 def parse_args():

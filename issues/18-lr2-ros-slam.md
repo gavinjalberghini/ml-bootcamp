@@ -31,3 +31,10 @@ SLAM is, using vocabulary you already have. You will not implement SLAM.
 - All four questions are answered.
 - Question 4 uses RA1 and RA5 terms and names at least one method from
   your assignments.
+- Stretch is optional.
+
+## Stretch goal (optional)
+
+**Challenge:** In `learning/LR2/stretch.md`, pick one SLAM failure mode
+from the paper and say whether your PA5 window, PA2 macro-F1, or PA9-style
+cost would be the better *analogy* — not an implementation.

@@ -13,7 +13,7 @@ installs it for this script only. Do not `pip install` it yourself.
 
 1. Open `learning/PA2/kNN_report.py`. Keep `import_pa('PA6')` and
    `class ReportingKNN(PA6.ScaledKNN)`. Confirm the script header lists
-   `matplotlib>=3.8`.
+   `matplotlib>=3.8`. Required methods have sudo comments.
 2. Implement `majority_baseline(labels)`. Ignore features. For each row,
    predict the most frequent class in the *other* rows (leave-one-out
    majority) or, if you document it, the global majority. Return
@@ -62,6 +62,17 @@ installs it for this script only. Do not `pip install` it yourself.
 - The report includes baseline vs kNN, macro vs weighted, time, and memory.
 - `uv run learning/PA2/kNN_report.py …` installs matplotlib from the script
   header.
+- Stretch is optional. Skipping `stretch_metric_interval` does not block PA7.
+
+## Stretch goal (optional)
+
+Later tickets only call `metrics_report`. They never call the stretch
+method.
+
+**Challenge:** Put an uncertainty idea on `stretch_metric_interval` (for
+example a resampled range around macro-F1) and write
+`learning/PA2/stretch.md`. Do not change the keys `metrics_report` must
+already return.
 
 ## References
 

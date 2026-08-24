@@ -65,11 +65,24 @@ class ScaledKNN(PA1.KNN):
 it. If you find a bug in leave-one-out, fix it in PA1; PA6 will pick it up
 the next time it runs.
 
+## Stretch goal (optional)
+
+Stretch goals are extra challenge. Skip this if you want. Revert any
+experiment so later tickets still see an empty `dependencies` list on
+`hello.py`.
+
+**Challenge:** Add a tiny third-party package to `hello.py`'s script header,
+`uv run` it so uv installs that package, write what happened in
+`learning/ENV/stretch.md`, then **put `dependencies` back to `[]`**. Do not
+leave a random package in a file later assignments do not use — isolation
+matters more than keeping the toy import.
+
 ## Acceptance criteria
 
 - `uv run learning/ENV/hello.py` prints a 3.10+ version without activating a venv.
 - `learning/ENV/notes.md` exists and answers the prompts in step 6.
 - A pull request includes that file.
+- Stretch is optional. Skipping it does not block RA1.
 
 ## References
 

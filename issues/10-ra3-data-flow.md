@@ -30,6 +30,13 @@ not a surprise. You will not write stream code until PA5.
 - Every heading has an answer.
 - You can say, in one sentence, why PA5 cannot use leave-one-out on the
   whole stream.
+- Stretch is optional. Skipping it does not block RA4.
+
+## Stretch goal (optional)
+
+**Challenge:** In `learning/RA3/answers.md` under “Stretch goal”, design a
+stratified subsample of `large.arff` (how many rows, how you keep rare
+qualities). No code that later tickets import.
 
 ## Optional research
 

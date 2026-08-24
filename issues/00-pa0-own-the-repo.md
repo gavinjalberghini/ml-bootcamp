@@ -29,11 +29,22 @@ a [personal access token](https://docs.github.com/en/authentication/keeping-your
 
 - A pull request that adds your filled-in `learning/README.md`.
 
+## Stretch goal (optional)
+
+Stretch goals are extra challenge. Skip this if you want. Nothing later
+depends on it.
+
+**Challenge:** In `learning/README.md` (or `learning/PA0/stretch.md` if you
+prefer a separate file), explain clone / branch / commit / PR in your own
+words as if you were teaching a classmate who has never used Git. No extra
+tools required.
+
 ## Acceptance criteria
 
 - The PR is open against this repository's default branch.
 - The README contains your name, background, and learning goals.
 - You can clone, branch, commit, push, and open a PR without help.
+- Stretch is optional. Skipping it does not block ENV.
 
 ## References
 

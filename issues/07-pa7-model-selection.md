@@ -13,7 +13,8 @@ vs `k`. Importing PA2 does not install matplotlib for you.
 ## Steps
 
 1. Open `learning/PA7/kNN_select.py`. Keep `import_pa('PA6')` and
-   `import_pa('PA2')`. `SelectingKNN` subclasses `ScaledKNN`.
+   `import_pa('PA2')`. `SelectingKNN` subclasses `ScaledKNN`. Required
+   methods have sudo comments.
 2. Implement `split(features, labels, seed, test_frac=0.2)`. Shuffle with
    that seed. Return `train_x, train_y, test_x, test_y`.
 3. For each `k` in `--k-grid` (default `1,3,5,7,9`), run **leave-one-out
@@ -59,6 +60,13 @@ vs `k`. Importing PA2 does not install matplotlib for you.
 - Headline metrics are from the 20% test slice. `k` was chosen on the 80%.
 - Distance and scaling come from PA6; metrics come from PA2.
 - Vote fractions appear in the report.
+- Stretch is optional. Skipping `stretch_brier` does not block PA3.
+
+## Stretch goal (optional)
+
+**Challenge:** Score the test slice with a Brier-style number on
+`stretch_brier` and record it in `learning/PA7/stretch.md`. Do not make
+`task pa7` fail if that method is still unimplemented.
 
 ## References
 

@@ -28,11 +28,22 @@ are categories, not numeric targets.
 
 - The filled `learning/RA1/answers.md` on a PR.
 
+## Stretch goal (optional)
+
+Stretch goals are extra challenge. Skip this if you want. Later tickets
+never read this heading.
+
+**Challenge:** Find one real **multilabel** dataset (name it and link it).
+In `learning/RA1/answers.md` under “Stretch goal”, say how a kNN would have
+to change its *output* (not just its distance) to handle that file. Do not
+implement it.
+
 ## Acceptance criteria
 
-- Every heading in the answers file has a written answer.
+- Every required heading in the answers file has a written answer.
 - You name the problem type of both provided files using the data README,
   not a guess.
+- Stretch is optional. Skipping it does not block PA1.
 
 ## References
 

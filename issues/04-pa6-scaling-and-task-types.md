@@ -9,7 +9,8 @@ for you.**
 ## Steps
 
 1. Open `learning/PA6/kNN_scaled.py`. Keep the `# /// script` header and the
-   `import_pa('PA1')` lines. `ScaledKNN` must subclass `PA1.KNN`.
+   `import_pa('PA1')` lines. `ScaledKNN` must subclass `PA1.KNN`. Required
+   methods have sudo comments (vague sketches, not Python).
 2. If `import_pa` fails, fix PA1 (class must be named `KNN`) rather than
    pasting PA1 into this folder.
 3. Implement `recode_labels(labels, source_path)`:
@@ -63,6 +64,17 @@ for you.**
 - Scaler statistics are fit without the query row.
 - Binary recoding matches the rules above.
 - `task pa6` runs via `uv run` on this file's script header.
+- Stretch is optional. Skipping `stretch_robust_scale` does not block PA2.
+
+## Stretch goal (optional)
+
+Later tickets only pass `--normalize {none,zscore,minmax}`. Do not replace
+those names.
+
+**Challenge:** Implement median / IQR scaling on the unused
+`stretch_robust_scale` method. In `learning/PA6/stretch.md`, compare it to
+z-score on `medium.arff` in a one-off experiment you run by hand. Do not
+make later Taskfile commands pass a new normalize value.
 
 ## References
 

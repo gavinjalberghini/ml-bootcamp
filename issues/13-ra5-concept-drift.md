@@ -32,6 +32,13 @@ implement a sliding window on your existing `predict_one`.
 
 - Every heading has an answer.
 - You cite the stream file's drift index and label map in the last answer.
+- Stretch is optional. Skipping it does not block RA6.
+
+## Stretch goal (optional)
+
+**Challenge:** In `learning/RA5/answers.md` under “Stretch goal”, invent a
+rule that would raise an alarm *without* being told instance 400. Do not
+put that rule on the required PA5 path.
 
 ## Optional research
 

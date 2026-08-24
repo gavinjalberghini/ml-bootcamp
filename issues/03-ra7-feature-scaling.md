@@ -35,3 +35,11 @@ into the scaler. PA6 will add `--normalize` to the same class.
 - Every heading has an answer.
 - At least one answer names a wine column and the leave-one-out leakage
   rule PA6 will have to follow.
+- Stretch is optional. Skipping it does not block PA6.
+
+## Stretch goal (optional)
+
+**Challenge:** From the wine ranges in the data README (or a quick pass over
+`medium.arff`), rank the columns by how much they would dominate unscaled
+Euclidean distance. Put the ranking under “Stretch goal” in
+`learning/RA7/answers.md`. No code change in PA1.

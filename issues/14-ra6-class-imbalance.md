@@ -30,6 +30,13 @@ votes.
 
 - Every heading has an answer.
 - One answer quotes or paraphrases the pre- and post-drift weights.
+- Stretch is optional. Skipping it does not block RA9.
+
+## Stretch goal (optional)
+
+**Challenge:** In `learning/RA6/answers.md` under “Stretch goal”, propose a
+window-only resample idea (what you would drop or repeat, and why it goes
+stale after the label map). No code.
 
 ## Optional research
 

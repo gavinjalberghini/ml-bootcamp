@@ -9,3 +9,6 @@
 ## When would you rather threshold vote fractions (PA7) than change neighbor weights?
 
 ## Which mistakes on `small.arff` would you assign a higher cost, and why?
+
+## Stretch goal (optional)
+

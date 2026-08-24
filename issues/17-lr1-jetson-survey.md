@@ -30,3 +30,10 @@ story to **your** kNN class.
 - All four questions are answered.
 - Question 4 refers to a method on your class (for example `leave_one_out`
   vs `run_stream`), not to kNN in the abstract.
+- Stretch is optional. Skipping it does not block LR2.
+
+## Stretch goal (optional)
+
+**Challenge:** In `learning/LR1/stretch.md`, compare one number from your
+PA4 findings (time or memory) to a Jetson constraint named in the survey.
+No new classifier.

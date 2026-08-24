@@ -10,7 +10,8 @@ for you.**
 ## Steps
 
 1. Open `learning/PA3/kNN_ensemble.py`. Keep `import_pa('PA6')` and
-   `import_pa('PA2')`. `EnsembleKNN` subclasses `ScaledKNN`.
+   `import_pa('PA2')`. `EnsembleKNN` subclasses `ScaledKNN`. Required
+   methods have sudo comments.
 2. Implement `bagged_loo(features, labels, members, seed)`:
    - For each query row `i`, the pool is every row except `i`.
    - Each member draws `len(pool)` rows **with replacement** from that pool
@@ -56,6 +57,13 @@ for you.**
   bag.
 - Neighbor search is `ScaledKNN.predict_one`, not a new kNN.
 - Report includes single, bagged, and distance-committee results.
+- Stretch is optional. Skipping `stretch_feature_subspace` does not block RA3.
+
+## Stretch goal (optional)
+
+**Challenge:** On `stretch_feature_subspace`, give each bagged member only
+some of the columns. Write `learning/PA3/stretch.md`. Do not change the
+required `bagged_loo` signature later tickets do not even call.
 
 ## References
 

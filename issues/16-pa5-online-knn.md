@@ -10,7 +10,8 @@ this for you.** Stdlib only for the model.
 ## Steps
 
 1. Open `learning/PA5/online_knn.py`. Keep `import_pa('PA6')` and
-   `import_pa('PA2')`. `OnlineKNN` subclasses `ScaledKNN`.
+   `import_pa('PA2')`. `OnlineKNN` subclasses `ScaledKNN`. Required methods
+   have sudo comments.
 2. Read the `%` comments on `learning/resources/data/small_stream.arff`
    (drift index, weights, label map).
 3. Implement `run_stream(features, labels)`:
@@ -66,6 +67,13 @@ schedule. That is optional.
 - Neighbor search is inherited `predict_one`. You did not paste a new kNN.
 - Memory is bounded by `W`.
 - The report includes window-size and weighted-vote comparisons.
+- Stretch is optional. Skipping `stretch_drift_alarm` does not block LR1.
+
+## Stretch goal (optional)
+
+**Challenge:** Mark suspected drift times on `stretch_drift_alarm` using
+only the rolling accuracy table, without reading the file header. Write
+`learning/PA5/stretch.md`. Do not make `task pa5` call that method.
 
 ## References
 

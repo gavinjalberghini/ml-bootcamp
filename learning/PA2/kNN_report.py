@@ -30,18 +30,42 @@ class ReportingKNN(PA6.ScaledKNN):
 
     def majority_baseline(self, labels):
         """Leave-one-out majority (or global majority). Return (y_true, y_pred)."""
+        # sudo:
+        #   pretend you never saw the features
+        #   for each row, guess the most common label among the other rows
+        #   (or one global most-common, if you say so in the report)
         raise NotImplementedError('a classifier that does not look at features')
 
     def metrics_report(self, y_true, y_pred) -> dict:
         """Accuracy, macro/weighted P/R/F1, per-class P/R/F1/sensitivity/specificity."""
+        # sudo:
+        #   build the grid of truth vs guess
+        #   overall: how often truth equals guess
+        #   per class: of that class, how many did you catch / how many did you cry wolf
+        #   macro: average the per-class numbers as if every class mattered equally
+        #   weighted: average them by how often the class appears
+        #   a class you never guessed: precision is zero, not "undefined"
         raise NotImplementedError
 
     def peak_memory_bytes(self) -> int:
+        # sudo:
+        #   ask the operating system how much memory this process has used
         raise NotImplementedError('resource.getrusage or /proc/self/status')
 
     def write_figures(self, outdir: Path, y_true, y_pred, baseline_pred) -> list:
         """Confusion heatmap and per-class F1 bars. Return saved paths."""
+        # sudo:
+        #   draw the grid so a person can see which classes get mixed up
+        #   draw a bar for each class's F1, including the baseline's bars
+        #   do not hide rare classes
         raise NotImplementedError('matplotlib')
+
+    def stretch_metric_interval(self, y_true, y_pred) -> dict:
+        """Optional stretch. Later tickets never call this."""
+        # sudo:
+        #   pick one headline number (macro-F1)
+        #   say how shaky it is if you resample the pairs
+        raise NotImplementedError('optional stretch — skip unless you want the challenge')
 
 
 def parse_args():

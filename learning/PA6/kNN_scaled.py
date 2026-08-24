@@ -33,14 +33,34 @@ class ScaledKNN(PA1.KNN):
 
     def recode_labels(self, labels, source_path: str):
         """binary: see the PA6 ticket. multiclass: return labels unchanged."""
+        # sudo:
+        #   if task is multiclass: leave labels alone
+        #   if task is binary and the file is the small one: majority class vs not
+        #   if task is binary and the file is wine-like: low vs high quality
         raise NotImplementedError('binary recode for small vs wine files')
 
     def scale_pair(self, query, pool):
         """Fit scaler on `pool` only. Return (scaled_query, scaled_pool)."""
+        # sudo:
+        #   look only at the pool, never the whole file
+        #   none -> do nothing
+        #   zscore -> shift by pool mean, shrink by pool spread
+        #   minmax -> stretch each column using pool min and pool max
+        #   a column with no spread becomes a boring zero
         raise NotImplementedError('none / zscore / minmax without the query in the fit')
 
     def predict_one(self, query, pool_x, pool_y) -> str:
+        # sudo:
+        #   scale query and pool together using scale_pair
+        #   then ask the parent class to pick neighbors
         raise NotImplementedError('scale, then PA1.KNN.predict_one')
+
+    def stretch_robust_scale(self, query, pool):
+        """Optional stretch (median / IQR). Later tickets never call this."""
+        # sudo:
+        #   same idea as zscore, but with a middle value and a middle-spread
+        #   that ignores wild outliers
+        raise NotImplementedError('optional stretch — skip unless you want the challenge')
 
 
 def parse_args():

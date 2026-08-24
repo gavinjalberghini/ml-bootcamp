@@ -7,3 +7,6 @@
 ## 3. Additional article (IEEE citation) that supports or refutes a claim
 
 ## 4. Connection to the kNN you have been building
+
+## Stretch goal (optional)
+

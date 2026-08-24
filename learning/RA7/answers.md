@@ -9,3 +9,6 @@
 ## How should a scaler be fit under leave-one-out? Under a train/validation split?
 
 ## Which wine columns do you expect to dominate unscaled Euclidean distance?
+
+## Stretch goal (optional)
+

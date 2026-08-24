@@ -11,3 +11,6 @@
 ## Which part of your kNN should move to a GPU first? Which part should stay on the CPU?
 
 ## For `small.arff` vs `large.arff`, when might a GPU kNN be slower?
+
+## Stretch goal (optional)
+

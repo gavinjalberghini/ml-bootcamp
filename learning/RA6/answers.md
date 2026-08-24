@@ -9,3 +9,6 @@
 ## How can concept drift and class imbalance interact? Look at `small_stream.arff` weights.
 
 ## How might imbalance affect kNN votes, and what window or sampling changes could help?
+
+## Stretch goal (optional)
+

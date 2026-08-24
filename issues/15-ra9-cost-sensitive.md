@@ -29,3 +29,10 @@ add `--weighted-vote` on the class you already have.
 - Every heading has an answer.
 - You describe the `--weighted-vote` rule PA5 will implement: weight a
   neighbor by the inverse of its class count **in the current window**.
+- Stretch is optional. Skipping it does not block PA5.
+
+## Stretch goal (optional)
+
+**Challenge:** Invent a 2×2 cost matrix for wine `low` vs `high` (binary
+task from PA6) in `learning/RA9/answers.md` under “Stretch goal”. Do not
+require PA5 to read that matrix.

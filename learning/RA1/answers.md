@@ -9,3 +9,6 @@
 ## What challenges arise as the number of classes or labels increases?
 
 ## Which type is `small.arff`? Which type is `medium.arff`? How would you turn one into a binary or (hypothetically) a multilabel problem?
+
+## Stretch goal (optional)
+

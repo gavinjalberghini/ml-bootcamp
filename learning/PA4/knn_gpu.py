@@ -33,14 +33,32 @@ class GpuKNN(PA6.ScaledKNN):
 
     def array_module(self):
         """Return cupy if it imports, else numpy. numpy is not required if you stay stdlib+lists."""
+        # sudo:
+        #   if a GPU library is present, use it
+        #   otherwise use a CPU array tool, or say you stayed on lists
         raise NotImplementedError
 
     def pairwise_distances(self, queries, pool, xp):
         """Vectorized distances using xp. No Python loop over every pair."""
+        # sudo:
+        #   think "one grid of all query-vs-pool gaps"
+        #   not "for this row, for that row"
         raise NotImplementedError
 
     def leave_one_out(self, features, labels):
+        # sudo:
+        #   build the big distance grid
+        #   forget the self-vs-self cells (the query is not its own neighbor)
+        #   scale the way PA6 already taught you
+        #   vote with the inherited vote
         raise NotImplementedError('use pairwise_distances; still exclude the query row')
+
+    def stretch_timing_breakdown(self, features, labels) -> dict:
+        """Optional stretch. Later tickets never call this."""
+        # sudo:
+        #   split the clock: copy data, compute distances, vote
+        #   write those pieces down; do not change the required path
+        raise NotImplementedError('optional stretch — skip unless you want the challenge')
 
 
 def parse_args():

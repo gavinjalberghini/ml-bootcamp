@@ -9,3 +9,6 @@
 ## What challenges or trade-offs appear?
 
 ## Why is bagging a more natural first ensemble for kNN than boosting?
+
+## Stretch goal (optional)
+

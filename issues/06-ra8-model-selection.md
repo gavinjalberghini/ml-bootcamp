@@ -30,3 +30,10 @@ held-out slice.
 
 - Every heading has an answer.
 - You describe the 80/20 split PA7 will use, in your own words.
+- Stretch is optional. Skipping it does not block PA7.
+
+## Stretch goal (optional)
+
+**Challenge:** In `learning/RA8/answers.md` under “Stretch goal”, sketch
+nested validation in words (outer split for the number you publish, inner
+split for choosing `k`). No code. PA7 stays a single holdout.

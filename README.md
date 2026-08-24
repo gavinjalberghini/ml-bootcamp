@@ -46,6 +46,23 @@ PA2/PA7; optional CuPy in PA4's header). Importing an earlier script does
 Do not copy `kNN.py` into the next folder. The skeletons already call
 `import_pa('PA1')` (or PA6/PA2). Keep the class names.
 
+Required methods include a **sudo** comment: a vague sketch of the idea, not
+runnable Python. Rewrite it yourself. Do not paste it as code.
+
+## Stretch goals
+
+Every ticket has an optional stretch goal. Its job is to pose a harder
+challenge after the required work is done — not to unlock the next
+assignment.
+
+- Skip any stretch you want. The next ticket never imports stretch methods
+  and never requires `stretch.md`.
+- Put stretch writeups in `learning/<assignment>/stretch.md` (or the extra
+  heading in a reading's `answers.md`).
+- Do not change required method names or the `none` / `zscore` / `minmax`
+  contract to “finish” a stretch. Isolation is the point: a failed stretch
+  must not break PA6 importing PA1.
+
 ## Assignments
 
 Do them in **table order**, not by assignment number. Numbers are stable IDs.
@@ -124,4 +141,6 @@ Tickets are numbered procedures. After each PR, check that the new class
 **subclasses** the previous one and did not paste a second distance function.
 Common failures: query row in leave-one-out, scaler fit on the whole file,
 accuracy-only reports, unscaled wine distances, copying PA1 instead of
-`import_pa`.
+`import_pa`. Stretch goals are optional; do not block a PR that skipped
+them. Do block a PR that broke the required class API in order to attempt
+one.

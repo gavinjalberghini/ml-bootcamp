@@ -31,6 +31,13 @@ operation in PA4. You will not write GPU code in this ticket.
 - Every heading has an answer.
 - You name the method PA4 will override instead of rewriting PA1 from
   scratch.
+- Stretch is optional. Skipping it does not block PA4.
+
+## Stretch goal (optional)
+
+**Challenge:** In `learning/RA4/answers.md` under “Stretch goal”, rough out
+how many distance calculations leave-one-out does on `medium.arff` (rows ×
+rows, plus a grain of salt). No implementation.
 
 ## Optional research
 

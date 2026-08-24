@@ -9,3 +9,6 @@
 ## How should accuracy and macro-F1 move as `k` grows on `small.arff`?
 
 ## What do vote fractions tell you that a hard label does not?
+
+## Stretch goal (optional)
+

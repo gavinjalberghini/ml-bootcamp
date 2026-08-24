@@ -8,7 +8,8 @@ import that class. Do not use scikit-learn or any other ML library. Stdlib
 only. **GAI should not write the implementation for you.**
 
 The skeleton already has the class, method names, a PEP 723 header, and the
-CLI. Keep those. Fill in the methods.
+CLI. Keep those. Each required method has a **sudo** comment: a vague sketch
+of the idea, not runnable Python. Rewrite it yourself.
 
 ## Steps
 
@@ -62,6 +63,17 @@ Keep the flags the skeleton already parses: `data`, `--distance {1,2,3}`,
 - Leave-one-out excludes the query row.
 - `--distance` selects Euclidean, Manhattan, or Minkowski.
 - The class is named `KNN` so PA6 can do `import_pa('PA1').KNN`.
+- Stretch is optional. Skipping `stretch_cosine` does not block PA6.
+
+## Stretch goal (optional)
+
+Stretch goals are extra challenge. Skip this if you want. Later tickets
+**never call** `stretch_cosine`. Leave it unimplemented.
+
+**Challenge:** Implement cosine as a separate idea of “near” on that unused
+method and write `learning/PA1/stretch.md`: on `small.arff`, did any
+leave-one-out guesses change versus Euclidean? Do not add a fourth
+`--distance` value that later CLIs do not know about.
 
 ## References
 
