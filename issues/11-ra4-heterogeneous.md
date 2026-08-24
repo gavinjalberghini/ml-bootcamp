@@ -1,36 +1,37 @@
 # [Reading Assignment 4] Heterogeneous Computing Architecture
 
-Your kNN is dominated by distance calculations: every query against every
-neighbor, every leave-one-out fold. That is the same arithmetic many times,
-which is the kind of work GPUs are built for. CPUs and GPUs together are a
-heterogeneous machine.
+You need: a working leave-one-out kNN. You have felt `medium.arff` get slow.
 
-Read about that split, and connect it to the implementation you already have.
-PA4 will ask you to restructure distance computation, not just “import cupy.”
+You will: identify which **method on your class** should become an array
+operation in PA4. You will not write GPU code in this ticket.
 
-As you read, think about the following:
+## Steps
 
-- What is a heterogeneous compute architecture?
-- How do CPUs and GPUs differ in design and in the jobs they are good at?
-- Why are GPUs effective for many machine learning workloads?
-- What challenges appear when software uses both (memory movement, branching,
-  small problems that are faster on CPU)?
-- Which part of *your* kNN should move to a GPU first? Which part should stay
-  on the CPU (ARFF I/O, voting, the leave-one-out driver)?
-- For `small.arff` vs `large.arff`, when might a GPU kNN be *slower*?
+1. Read [heterogeneous computing (IBM)](https://www.ibm.com/topics/heterogeneous-computing).
+2. Read [what is a GPU (Intel)](https://www.intel.com/content/www/us/en/products/docs/processors/what-is-a-gpu.html).
+3. Read [GPU computing (NVIDIA)](https://www.nvidia.com/en-us/deep-learning-ai/what-is-gpu-computing/).
+4. Read [parallel computing](https://www.geeksforgeeks.org/parallel-computing/).
+5. Answer every heading in `learning/RA4/answers.md`:
+   - What is a heterogeneous architecture?
+   - CPU vs GPU design and jobs
+   - Why GPUs help many ML workloads
+   - Challenges of using both (memory movement, small problems)
+   - Which method on `KNN` / `ScaledKNN` should move first (`dist` vs
+     a new pairwise matrix)? Which methods stay on the CPU (ARFF, vote,
+     the leave-one-out driver)?
+   - When might GPU kNN be slower on `small.arff` than on `large.arff`?
+6. Commit and open a PR.
+
+## What to turn in
+
+- Filled `learning/RA4/answers.md`.
 
 ## Acceptance criteria
 
-Read the supporting documentation and write answers to the questions above in
-`learning/RA4/answers.md`.
+- Every heading has an answer.
+- You name the method PA4 will override instead of rewriting PA1 from
+  scratch.
 
-## Articles
+## Optional research
 
-- [Heterogeneous computing (IBM)](https://www.ibm.com/topics/heterogeneous-computing)
-- [What is a GPU (Intel)](https://www.intel.com/content/www/us/en/products/docs/processors/what-is-a-gpu.html)
-- [GPU computing (NVIDIA)](https://www.nvidia.com/en-us/deep-learning-ai/what-is-gpu-computing/)
-- [Parallel computing](https://www.geeksforgeeks.org/parallel-computing/)
-
-## Research (optional)
-
-- [10.1145/3295500](https://doi.org/10.1145/3295500) — GPU computing survey (ACM; use library access)
+- [10.1145/3295500](https://doi.org/10.1145/3295500) via your library.

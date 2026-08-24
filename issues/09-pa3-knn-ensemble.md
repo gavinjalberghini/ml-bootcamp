@@ -1,69 +1,61 @@
 # [Programming Assignment 3] A kNN Ensemble
 
-RA2 distinguished bagging (diversity from data) from other committees. This
-ticket implements bagging as the primary ensemble, then keeps a
-three-distance vote as a comparison so you can see the difference.
+You need: PA6 (`ScaledKNN.predict_one`, `leave_one_out`) and PA2
+(`metrics_report`). RA2 answered.
 
-Copy forward your latest kNN (PA6/PA2). A skeleton lives at
-`learning/PA3/kNN_ensemble.py`. **Stdlib only for the model; matplotlib is
-fine for optional plots. GAI should not implement this for you.**
+You will: bag copies of **that** classifier, then compare a three-distance
+committee. Do not reimplement distance. **GAI should not implement this
+for you.**
 
-Use leave-one-out at the **instance** level: when scoring row `i`, row `i`
-is never in any member's neighbor pool. Bootstrap draws are taken from the
-remaining rows.
+## Steps
 
-## 1. Bagged kNN (required)
+1. Open `learning/PA3/kNN_ensemble.py`. Keep `import_pa('PA6')` and
+   `import_pa('PA2')`. `EnsembleKNN` subclasses `ScaledKNN`.
+2. Implement `bagged_loo(features, labels, members, seed)`:
+   - For each query row `i`, the pool is every row except `i`.
+   - Each member draws `len(pool)` rows **with replacement** from that pool
+     (use `random.Random(seed)` plus a per-member offset).
+   - Each member is a `ScaledKNN` with the same `k`, distance, and
+     `--normalize`. Call `predict_one` on its bootstrap pool.
+   - Ensemble vote is majority over members. Reuse `vote` from PA1 if you
+     can.
+   - Also store each member's prediction so the report can show disagreement.
+3. Implement `distance_committee_loo`: three `ScaledKNN` instances with
+   Euclidean, Manhattan, and Minkowski (`self.p`), same `k` and normalize,
+   majority vote. This is not bagging; it is the comparison RA2 asked for.
+4. Run a single unbagged `leave_one_out` (inherited) as the baseline.
+5. Score single, bagged, and committee with `ReportingKNN.metrics_report`.
+6. Write `learning/PA3/output_ensemble.md` with settings, time, memory
+   (optional), confusion matrices or metric tables, and per-member macro-F1.
+7. Run:
 
-- `--members` (default 5): number of bootstrap kNNs.
-- `--seed` (default 5).
-- Each member draws `n-1` rows **with replacement** from the leave-one-out
-  pool (same size as the pool).
-- Each member uses the same `k` and the same distance (Euclidean unless
-  `--distance` says otherwise) and the same `--normalize` rule as PA6.
-- The ensemble prediction is majority vote over members. Break ties
-  deterministically.
-- Also produce a confusion matrix for each member so you can see whether
-  they actually disagree.
+   ```bash
+   task pa3
+   task pa3 DATA=learning/resources/data/medium.arff NORMALIZE=zscore
+   ```
 
-## 2. Distance committee (comparison)
+8. Answer in the markdown:
+   - Did the members disagree, or did bagging copy one kNN five times?
+   - Did bagging beat the single model on macro-F1, or only on accuracy?
+   - How did the distance committee compare to bagging?
+9. Commit and open a PR.
 
-Run three kNNs on the same leave-one-out pool with Euclidean, Manhattan, and
-Minkowski (`--p`). Majority-vote those three. This is the “reuse the
-distances we already had” ensemble. It is not bagging.
+## Command-line contract
 
-## 3. Single kNN
+`data`, `--k`, `--distance`, `--p`, `--normalize`, `--members` (default 5),
+`--seed` (default 5), `--output` (default `output_ensemble.md`).
 
-Run one unbagged kNN with the same `k`, distance, and normalization so the
-report has a baseline that is not the majority-class dummy (you may still
-include that dummy).
+## What to turn in
 
-## Outputs
-
-Write `learning/PA3/output_ensemble.md` with settings, time, memory, and
-confusion matrices / macro-F1 for: single kNN, bagged ensemble, each bagged
-member, and the distance committee.
-
-Run:
-
-```bash
-task pa3
-task pa3 DATA=learning/resources/data/medium.arff NORMALIZE=zscore
-```
-
-Closing writeup:
-
-- Did the members disagree, or did bagging just copy one kNN five times?
-- Did bagging beat the single model on macro-F1, or only on accuracy?
-- How did the distance committee compare to bagging? Which kind of
-  diversity seemed to matter on these files?
+- `learning/PA3/kNN_ensemble.py`
+- `output_ensemble.md` with the three answers
 
 ## Acceptance criteria
 
-- `learning/PA3/kNN_ensemble.py` runs via `task pa3`.
-- Bagging is implemented with replacement draws and leave-one-out exclusion
-  of the query.
-- The markdown report includes single, bagged, and distance-committee
-  results plus the writeup.
+- Bags are drawn from the leave-one-out pool; the query row is never in a
+  bag.
+- Neighbor search is `ScaledKNN.predict_one`, not a new kNN.
+- Report includes single, bagged, and distance-committee results.
 
 ## References
 

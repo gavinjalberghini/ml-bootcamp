@@ -1,36 +1,32 @@
 # [Reading Assignment 8] Model Selection and Validation
 
-`k` is not a detail. Small `k` follows local noise; large `k` smooths toward
-the majority class. Distance choice and normalization are also model decisions.
-If you try several settings and then report the best leave-one-out score from
-the same pass, you have used the evaluation set to pick the model.
+You need: PA2 done. You can report macro-F1. You have been using a single
+`k` (often 3).
 
-This reading is about that split: what you may look at while choosing `k`,
-and what you may report as the final number.
+You will: learn why you must not pick `k` on the same number you publish.
+PA7 will hold out 20% of the rows, choose `k` on the rest, and score the
+held-out slice.
 
-As you read, think about the following:
+## Steps
 
-- What is the difference between a training set, a validation set, and a
-  test set? Where does leave-one-out sit in that picture?
-- Why is “pick the `k` with the best LOO accuracy, then report that
-  accuracy” optimistic?
-- How does nested validation differ from a single holdout?
-- For kNN specifically, how do you expect accuracy and macro-F1 to move as
-  `k` grows on an imbalanced file like `small.arff`?
-- What would a vote fraction (4 of 5 neighbors agree vs 3 of 5) tell you
-  that a hard label does not?
+1. Read [training, validation, and test sets](https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets).
+2. Read [cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)).
+3. Read [bias–variance tradeoff](https://en.wikipedia.org/wiki/Bias%E2%80%93variance_tradeoff).
+4. Read [hyperparameter optimization](https://en.wikipedia.org/wiki/Hyperparameter_optimization).
+5. Skim [choosing k](https://machinelearningmastery.com/k-nearest-neighbors-for-machine-learning/).
+6. Answer every heading in `learning/RA8/answers.md`:
+   - Training vs validation vs test; where leave-one-out sits
+   - Why “best LOO `k`, report that LOO score” is optimistic
+   - Nested validation vs a single holdout
+   - How accuracy and macro-F1 should move as `k` grows on `small.arff`
+   - What vote fractions tell you that a hard label does not
+7. Commit and open a PR.
 
-You will implement a `k` sweep and vote-fraction confidence in PA7.
+## What to turn in
+
+- Filled `learning/RA8/answers.md`.
 
 ## Acceptance criteria
 
-Read the supporting documentation and write answers to the questions above in
-`learning/RA8/answers.md`.
-
-## Articles
-
-- [Training, validation, and test sets](https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets)
-- [Cross-validation (Wikipedia)](https://en.wikipedia.org/wiki/Cross-validation_(statistics))
-- [Bias–variance tradeoff](https://en.wikipedia.org/wiki/Bias%E2%80%93variance_tradeoff)
-- [Hyperparameter optimization](https://en.wikipedia.org/wiki/Hyperparameter_optimization)
-- [Choosing k in kNN (Machine Learning Mastery)](https://machinelearningmastery.com/k-nearest-neighbors-for-machine-learning/)
+- Every heading has an answer.
+- You describe the 80/20 split PA7 will use, in your own words.

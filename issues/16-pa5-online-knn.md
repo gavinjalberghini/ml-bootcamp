@@ -1,107 +1,74 @@
 # [Programming Assignment 5] Online kNN for Drifting Streams
 
-By this point the kNN is a batch learner: it sees a complete ARFF file, then
-evaluates with leave-one-out. Real online problems do not work that way.
-Instances arrive one at a time, memory must stay bounded, and both the
-decision boundary and the class proportions can change while you are still
-predicting.
+You need: PA6 (`predict_one`, `read_arff`, `--normalize`), PA2
+(`metrics_report`), RA5, RA6, and RA9. Batch leave-one-out is finished.
 
-RA5: concept drift can invalidate old neighbors. RA6: class imbalance can
-make accuracy look fine while a minority label is ignored. RA9: you can
-change the vote instead of pretending classes are equal. This ticket puts
-those three ideas on one sliding-window kNN.
+You will: keep that predictor and change **how instances arrive**. Memory
+is a sliding window. Evaluation is prequential. **GAI should not implement
+this for you.** Stdlib only for the model.
 
-**GAI should not implement the assignment for you; feel free to use it when
-you are stuck.** Stdlib only for the model. matplotlib is fine for optional
-plots. A skeleton lives at `learning/PA5/online_knn.py`.
+## Steps
 
-## 1. Online kNN
+1. Open `learning/PA5/online_knn.py`. Keep `import_pa('PA6')` and
+   `import_pa('PA2')`. `OnlineKNN` subclasses `ScaledKNN`.
+2. Read the `%` comments on `learning/resources/data/small_stream.arff`
+   (drift index, weights, label map).
+3. Implement `run_stream(features, labels)`:
+   - Walk the file in order. For each new row, **predict first** using only
+     the current window as `pool_x` / `pool_y` (`predict_one` from PA6).
+   - Then append the row and its **true** label. If the window is longer
+     than `--window`, drop the oldest row.
+   - You cannot store the whole stream.
+   - If the window has fewer than `k` rows, skip the prediction or vote
+     among what you have, and say which in the report.
+   - If `--normalize` is not `none`, fit the scaler on the **current
+     window** only (already the rule in `scale_pair` if the pool is the
+     window).
+4. Override `vote` so that `--weighted-vote` weights each neighbor by
+   `1 / count(class)` in the **current window** (RA9). Off: same majority
+   vote as PA1.
+5. After the pass, use `ReportingKNN.metrics_report` for overall and
+   per-class metrics. Also build a table of prequential accuracy and
+   minority-class recall every N instances (N = 50 is fine) so the drop at
+   the drift index is visible.
+6. Run, in order:
 
-Process the stream instance by instance using **prequential** evaluation:
-predict the label of the new instance using only the neighbors currently in
-memory, then insert the instance (with its true label) into memory. Memory
-must be a sliding window of the most recent `W` instances — you cannot store
-the entire stream. Reuse a distance from your earlier kNN (Euclidean is the
-default). Honor `--normalize` if you apply scaling: fit on the current
-window only, never on the future.
+   ```bash
+   task pa5
+   task pa5 WINDOW=20
+   task pa5:weighted
+   uv run learning/PA5/online_knn.py learning/resources/data/small.arff --k 3 --window 50
+   ```
 
-The first few instances (window not yet of size `k`) cannot be predicted
-fairly; skip them or predict the majority of what you have, and say which.
+   Optional: `medium_stream.arff` (drift at 1000).
+7. Write `learning/PA5/output_online.md` with settings, time, memory,
+   confusion matrix, per-class P/R/F1, the rolling table, two window sizes,
+   uniform vs weighted votes, and a short comparison: stationary
+   `small.arff` vs `small_stream.arff`, small `W` vs large `W`, weighted vs
+   uniform.
+8. Commit and open a PR.
 
-As you work, consider:
+`task generate-stream` rebuilds the stream files if you want a different
+schedule. That is optional.
 
-- Which parts of batch kNN no longer make sense once data arrives one
-  instance at a time?
-- What happens to predictions immediately after a sudden drift if the
-  window is still full of the old concept?
-- What happens to minority-class recall if the window is dominated by the
-  majority class?
-- How does changing `W` trade adaptation speed against stability?
+## Command-line contract
 
-## 2. `--weighted-vote` (required flag, run both ways)
+`data`, `--k`, `--window`, `--normalize`, `--weighted-vote`, `--output`
+(default `output_online.md`).
 
-When `--weighted-vote` is set, neighbors vote with weight inverse to the
-class count **in the current window** (RA9). When it is off, use uniform
-majority vote. Compare the two on `small_stream.arff` in the report.
+## What to turn in
 
-## 3. The data
-
-Start with the provided stream files. They use the same attributes and class
-values as `small.arff` / `medium.arff`, but they are ordered as a stream with
-a sudden concept drift and a change in class proportions. The `%` comments
-at the top of each file tell you the drift index, the pre/post class
-weights, and the label map.
-
-- `learning/resources/data/small_stream.arff` — 800 instances, drift at
-  instance 400. Primary dataset.
-- `learning/resources/data/medium_stream.arff` — 2000 instances, drift at
-  instance 1000. Optional harder run.
-- `learning/resources/data/small.arff` — stationary baseline. Run the same
-  online kNN over this file treated as a stream (no injected drift).
-
-The generator is `learning/resources/generate_stream.py`
-(`task generate-stream`). Reading it or changing the drift schedule is
-optional.
-
-## 4. Outputs
-
-Write `learning/PA5/output_online.md` (`--output`) including:
-
-- Command-line settings (`k`, `W`, distance, normalize, weighted-vote, file)
-- Execution time and peak memory
-- Overall prequential accuracy plus a confusion matrix
-- Per-class precision, recall, and F1
-- A table of prequential accuracy (and minority-class recall) every N
-  instances so the drop around the drift point is visible
-- The same metrics for at least two window sizes on `small_stream.arff`
-- Uniform vote vs `--weighted-vote` on `small_stream.arff`
-- A short written comparison: stationary `small.arff` vs `small_stream.arff`,
-  small `W` vs large `W`, and weighted vs uniform votes
-
-The script must accept the ARFF path plus at least `--k`, `--window`,
-`--weighted-vote`, and `--output`.
-
-```bash
-task pa5
-task pa5 WINDOW=20
-# then a weighted-vote run, e.g.
-# uv run learning/PA5/online_knn.py learning/resources/data/small_stream.arff --k 3 --window 50 --weighted-vote
-```
-
-Also run the same binary against `small.arff`.
+- `learning/PA5/online_knn.py`
+- `output_online.md` covering the runs in step 6
 
 ## Acceptance criteria
 
-- `learning/PA5/online_knn.py` implements prequential sliding-window kNN
-  and writes `learning/PA5/output_online.md`.
+- Neighbor search is inherited `predict_one`. You did not paste a new kNN.
 - Memory is bounded by `W`.
-- The report includes window-size and weighted-vote comparisons and the
-  writeup above.
+- The report includes window-size and weighted-vote comparisons.
 
 ## References
 
 - [Prequential evaluation (River)](https://riverml.xyz/latest/introduction/getting-started/prequential-evaluation/)
-- [Concept drift](https://www.geeksforgeeks.org/machine-learning/introduction-to-concept-drift/)
-- [argparse](https://docs.python.org/3/library/argparse.html)
 - [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff/)
 - RA5, RA6, RA9

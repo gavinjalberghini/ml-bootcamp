@@ -1,28 +1,35 @@
-#!/usr/bin/env python3
-"""PA3: bagged kNN plus a three-distance committee. Copy forward from PA6."""
+# /// script
+# requires-python = ">=3.10"
+# dependencies = []
+# ///
+"""PA3: bag PA6.ScaledKNN members. Score with PA2.ReportingKNN.metrics_report."""
 from __future__ import annotations
 
 import argparse
+import sys
 import time
 from pathlib import Path
 
+LEARNING = Path(__file__).resolve().parent.parent
+if str(LEARNING) not in sys.path:
+    sys.path.insert(0, str(LEARNING))
 
-def read_arff(path: str):
-    raise NotImplementedError
+from load_assignment import import_pa
 
-
-def bagged_loo(features, labels, k: int, metric: int, p: float, normalize: str, members: int, seed: int):
-    """Return ensemble preds and per-member preds. Query row never in a bag."""
-    raise NotImplementedError('bootstrap sample the leave-one-out pool')
-
-
-def distance_committee_loo(features, labels, k: int, p: float, normalize: str):
-    """Euclidean + Manhattan + Minkowski majority vote."""
-    raise NotImplementedError
+PA2 = import_pa('PA2')
+PA6 = import_pa('PA6')
 
 
-def single_loo(features, labels, k: int, metric: int, p: float, normalize: str):
-    raise NotImplementedError
+class EnsembleKNN(PA6.ScaledKNN):
+    """Bagged kNN plus a three-distance committee. Query row never in a bag."""
+
+    def bagged_loo(self, features, labels, members: int, seed: int):
+        """Return ensemble preds and per-member preds."""
+        raise NotImplementedError('bootstrap sample the leave-one-out pool')
+
+    def distance_committee_loo(self, features, labels):
+        """Euclidean + Manhattan + Minkowski majority vote, each a ScaledKNN."""
+        raise NotImplementedError
 
 
 def parse_args():
@@ -41,12 +48,12 @@ def parse_args():
 def main():
     args = parse_args()
     started = time.perf_counter()
-    features, labels = read_arff(args.data)
-    single = single_loo(features, labels, args.k, args.distance, args.p, args.normalize)
-    bagged, members = bagged_loo(
-        features, labels, args.k, args.distance, args.p, args.normalize, args.members, args.seed
-    )
-    committee = distance_committee_loo(features, labels, args.k, args.p, args.normalize)
+    model = EnsembleKNN(k=args.k, distance=args.distance, p=args.p, normalize=args.normalize)
+    features, labels = model.read_arff(args.data)
+    reporter = PA2.ReportingKNN(k=args.k, distance=args.distance, p=args.p, normalize=args.normalize)
+    y_true, y_single = model.leave_one_out(features, labels)
+    bagged, members = model.bagged_loo(features, labels, args.members, args.seed)
+    committee = model.distance_committee_loo(features, labels)
     elapsed = time.perf_counter() - started
     Path(args.output).write_text(
         '\n'.join(
@@ -58,8 +65,7 @@ def main():
                 f'- normalize: {args.normalize}',
                 f'- members: {args.members}',
                 f'- elapsed_s: {elapsed:.4f}',
-                '',
-                f'- single: {single}',
+                f'- single: {reporter.metrics_report(y_true, y_single)}',
                 f'- bagged: {bagged}',
                 f'- members: {members}',
                 f'- distance_committee: {committee}',

@@ -1,57 +1,59 @@
 # [Programming Assignment 4] GPU-Assisted kNN
 
-RA4 argued that the expensive part of kNN is the distance matrix. This ticket
-restructures that work so it can run on a GPU, then compares it to the CPU
-kNN you already trust.
+You need: PA6 (`ScaledKNN`) and PA2 (`metrics_report`). RA4 answered.
 
-You may use CuPy, PyTorch, or another GPU array library for the distance
-math. The rest of the assignment (ARFF, leave-one-out driver, voting,
-metrics) stays yours. **GAI should not implement this for you.**
+You will: subclass `ScaledKNN`, replace the pair loop with an array distance
+matrix, and compare times. Voting and ARFF stay on the inherited class.
+**GAI should not implement this for you.**
 
-A skeleton lives at `learning/PA4/knn_gpu.py`. The project extra
-`pa4-gpu` installs `cupy-cuda12x`. Use `task pa4` (CPU-only environment) and
-`task pa4:gpu` (extra installed). If this machine has no GPU, the script
-must still run: detect the missing device, compute on CPU with the same
-vectorized code path if you can, and say so in the findings.
+Dependencies live in **this file's** `# /// script` header. Start with
+`dependencies = []` and a vectorized CPU path (stdlib lists or, if you
+add it to the header, numpy). When you have CUDA, add
+`"cupy-cuda12x[ctk]>=13.0"` to that list and run the same command again.
+Do not use `uv sync --extra`.
 
-## What to implement
+## Steps
 
-- Same leave-one-out protocol as PA1/PA6. Query row excluded.
-- Honor `--k` and `--normalize {none,zscore,minmax}` (fit the scaler on the
-  pool, not the whole file).
-- Build distances as an array operation (broadcast or pairwise matrix), not
-  a Python loop over every pair if you can avoid it. The GPU path and the
-  CPU path should share that structure so the comparison is fair.
-- Predictions should match the CPU implementation except for floating-point
-  noise.
-- Measure wall-clock time for CPU vs GPU (or CPU-loop vs CPU-vectorized vs
-  GPU) on `small.arff` and at least one larger file (`medium.arff` or
-  `large.arff`). Leave-one-out on `large.arff` is a stress run; a fixed
-  subsample is acceptable if you document the size.
+1. Open `learning/PA4/knn_gpu.py`. Keep `import_pa('PA6')` and
+   `class GpuKNN(PA6.ScaledKNN)`.
+2. Implement `array_module()`: return `cupy` if it imports, else a CPU
+   array library or a documented fallback.
+3. Implement `pairwise_distances(queries, pool, xp)` as broadcast or matrix
+   math. No Python loop over every pair.
+4. Override `leave_one_out` so it builds that matrix, still **excludes the
+   query row** (mask or delete the diagonal), applies `--normalize` the PA6
+   way (fit on the pool), and calls inherited `vote`.
+5. Predictions on `small.arff` should match `ScaledKNN` except for floating
+   point noise. Use `ReportingKNN.metrics_report` to compare.
+6. Time CPU-loop (`task pa6`), vectorized CPU, and GPU if present, on
+   `small.arff` and on `medium.arff` or a documented subsample of
+   `large.arff`.
+7. Write `learning/PA4/output_gpu.md` (settings, times, backend, metrics)
+   and fill `learning/PA4/findings.md`: hardware, the script-header change
+   you made, what moved, transfer cost, when the GPU helped, and how this
+   would change for the **window** kNN in PA5.
+8. Run `task pa4`. Commit and open a PR.
 
-Write any extra setup in `learning/PA4/findings.md` as well as the comparison.
+## Command-line contract
 
-## Outputs
+`data`, `--k`, `--normalize`, `--output` (default `output_gpu.md`).
 
-- `learning/PA4/knn_gpu.py` runnable via `task pa4` and `task pa4:gpu`
-- `learning/PA4/output_gpu.md` with settings, times, whether a GPU was used,
-  and a confusion matrix that you can set next to PA1/PA6
-- `learning/PA4/findings.md`: which kernels moved, data-transfer cost, when
-  the GPU helped, and how this would change if the model were the online
-  window kNN from PA5 instead of batch leave-one-out
+## What to turn in
+
+- `learning/PA4/knn_gpu.py`
+- `output_gpu.md` and `findings.md`
 
 ## Acceptance criteria
 
-- Distance computation is actually array-parallel, not a thin wrapper around
-  the PA1 double loop.
-- CPU and GPU (or vectorized fallback) predictions are identical or
-  near-identical on `small.arff`.
-- Findings explain hardware, commands (`uv run --extra pa4-gpu ...`), and
-  the time comparison.
+- Distance work is array-parallel. `read_arff` and `vote` come from earlier
+  classes.
+- `small.arff` predictions match PA6 within floating-point noise.
+- Findings say whether CuPy was in the script header and what `uv run`
+  installed.
 
 ## References
 
 - [CuPy](https://docs.cupy.dev/en/stable/)
-- [PyTorch tensors](https://pytorch.org/tutorials/beginner/basics/tensorqs_tutorial.html)
-- [Accelerated Python](https://developer.nvidia.com/blog/accelerated-python-with-cuda-and-numba/)
+- [uv script dependencies](https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies)
+- [PyTorch tensors](https://pytorch.org/tutorials/beginner/basics/tensorqs_tutorial.html) (allowed alternative)
 - RA4

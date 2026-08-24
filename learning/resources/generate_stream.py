@@ -1,3 +1,7 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = []
+# ///
 # uv run learning/resources/generate_stream.py learning/resources/data/small.arff \
 #     --output learning/resources/data/small_stream.arff
 """Build a drifting, imbalanced ARFF stream from a stationary dataset.

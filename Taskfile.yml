@@ -1,8 +1,8 @@
 # https://taskfile.dev
 #
-# Every task runs through `uv run`, which automatically creates/syncs the
-# project virtual environment from pyproject.toml + uv.lock on first use.
-# Student work lives under learning/PA1, learning/PA2, ...
+# Each assignment is a uv script (PEP 723 header in the .py file).
+# `uv run file.py` installs that file's dependencies. There is no project venv
+# to activate. `task setup` only checks that uv exists.
 version: '3'
 
 vars:
@@ -22,20 +22,25 @@ tasks:
       - task: setup
 
   setup:
-    desc: Create/sync the uv-managed virtual environment
+    desc: Verify uv is installed (dependencies live in each script header)
     cmds:
-      - uv sync
+      - uv --version
+
+  env:
+    desc: 'ENV: run the uv hello script'
+    cmds:
+      - uv run {{.ROOT_DIR}}/learning/ENV/hello.py
 
   generate-stream:
     desc: 'Regenerate drifting stream ARFF files from small.arff and medium.arff'
     cmds:
-      - uv run python learning/resources/generate_stream.py learning/resources/data/small.arff --output learning/resources/data/small_stream.arff --length 800 --drift 400 --seed 5
-      - uv run python learning/resources/generate_stream.py learning/resources/data/medium.arff --output learning/resources/data/medium_stream.arff --length 2000 --drift 1000 --seed 5
+      - uv run {{.ROOT_DIR}}/learning/resources/generate_stream.py {{.ROOT_DIR}}/learning/resources/data/small.arff --output {{.ROOT_DIR}}/learning/resources/data/small_stream.arff --length 800 --drift 400 --seed 5
+      - uv run {{.ROOT_DIR}}/learning/resources/generate_stream.py {{.ROOT_DIR}}/learning/resources/data/medium.arff --output {{.ROOT_DIR}}/learning/resources/data/medium_stream.arff --length 2000 --drift 1000 --seed 5
 
   issues:
     desc: 'Create GitHub issues from issues/*.md (requires gh auth)'
     cmds:
-      - uv run python scripts/create_issues.py
+      - uv run {{.ROOT_DIR}}/scripts/create_issues.py
 
   pa1:
     desc: 'PA1: kNN with leave-one-out validation (stdlib only)'
@@ -68,16 +73,10 @@ tasks:
       - uv run kNN_ensemble.py {{.DATA_ABS}} --k {{.K}} --normalize {{.NORMALIZE}}
 
   pa4:
-    desc: 'PA4: GPU kNN vs CPU baseline (falls back to CPU without cupy)'
+    desc: 'PA4: vectorized / GPU kNN (add cupy to this file header for GPU)'
     dir: learning/PA4
     cmds:
       - uv run knn_gpu.py {{.DATA_ABS}} --k {{.K}} --normalize {{.NORMALIZE}}
-
-  pa4:gpu:
-    desc: 'PA4 with cupy installed (requires CUDA 12 hardware/drivers)'
-    dir: learning/PA4
-    cmds:
-      - uv run --extra pa4-gpu knn_gpu.py {{.DATA_ABS}} --k {{.K}} --normalize {{.NORMALIZE}}
 
   pa5:
     desc: 'PA5: online sliding-window kNN on a drifting stream'

@@ -1,27 +1,36 @@
-#!/usr/bin/env python3
-"""PA7: choose k on an 80% slice; score the 20% test set; record vote fractions."""
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#   "matplotlib>=3.8",
+# ]
+# ///
+"""PA7: import PA6 for the model and PA2 for metrics. Do not copy those files."""
 from __future__ import annotations
 
 import argparse
+import sys
 import time
 from pathlib import Path
 
+LEARNING = Path(__file__).resolve().parent.parent
+if str(LEARNING) not in sys.path:
+    sys.path.insert(0, str(LEARNING))
 
-def read_arff(path: str):
-    raise NotImplementedError
+from load_assignment import import_pa
 
-
-def split(features, labels, seed: int, test_frac: float = 0.2):
-    raise NotImplementedError('shuffle with seed, return train/test')
-
-
-def loo_macro_f1(features, labels, k: int, metric: int, p: float, normalize: str) -> float:
-    raise NotImplementedError
+PA2 = import_pa('PA2')
+PA6 = import_pa('PA6')
 
 
-def predict_with_votes(train_x, train_y, query, k: int, metric: int, p: float, normalize: str):
-    """Return (hard_label, vote_fraction_of_winner). Fit scaler on train only."""
-    raise NotImplementedError
+class SelectingKNN(PA6.ScaledKNN):
+    """Hold out 20%, choose k on the rest, score the test slice, record vote fractions."""
+
+    def split(self, features, labels, seed: int, test_frac: float = 0.2):
+        raise NotImplementedError('shuffle with seed, return train_x, train_y, test_x, test_y')
+
+    def predict_with_votes(self, query, pool_x, pool_y):
+        """Return (hard_label, vote_fraction_of_winner). Scale using the pool only."""
+        raise NotImplementedError
 
 
 def parse_k_grid(text: str) -> list[int]:
@@ -46,14 +55,22 @@ def parse_args():
 def main():
     args = parse_args()
     started = time.perf_counter()
-    features, labels = read_arff(args.data)
+    probe = SelectingKNN(k=1, distance=args.distance, p=args.p, normalize=args.normalize)
+    features, labels = probe.read_arff(args.data)
+    train_x, train_y, test_x, test_y = probe.split(features, labels, args.seed)
+    reporter = PA2.ReportingKNN(k=1, distance=args.distance, p=args.p, normalize=args.normalize)
     grid = parse_k_grid(args.k_grid)
-    train_x, train_y, test_x, test_y = split(features, labels, args.seed)
-    scores = {k: loo_macro_f1(train_x, train_y, k, args.distance, args.p, args.normalize) for k in grid}
-    chosen = max(sorted(scores), key=lambda k: (scores[k], -k))
+    scores = {}
+    for k in grid:
+        model = SelectingKNN(k=k, distance=args.distance, p=args.p, normalize=args.normalize)
+        y_true, y_pred = model.leave_one_out(train_x, train_y)
+        scores[k] = reporter.metrics_report(y_true, y_pred)
+    # You choose k from scores[k]['macro_f1'] once that key exists.
+    chosen = grid[0]
+    final = SelectingKNN(k=chosen, distance=args.distance, p=args.p, normalize=args.normalize)
     preds, votes = [], []
     for query in test_x:
-        label, frac = predict_with_votes(train_x, train_y, query, chosen, args.distance, args.p, args.normalize)
+        label, frac = final.predict_with_votes(query, train_x, train_y)
         preds.append(label)
         votes.append(frac)
     elapsed = time.perf_counter() - started
@@ -65,14 +82,11 @@ def main():
                 f'- data: {args.data}',
                 f'- normalize: {args.normalize}',
                 f'- k_grid: {grid}',
-                f'- validation_macro_f1: {scores}',
+                f'- validation_scores: {scores}',
                 f'- chosen_k: {chosen}',
                 f'- elapsed_s: {elapsed:.4f}',
-                '',
-                '## Test predictions',
-                '',
                 f'- n_test: {len(test_y)}',
-                f'- vote_fractions: {votes[:5]} ...',
+                f'- vote_fractions_head: {votes[:5]}',
                 '',
                 '## Discussion',
                 '',
@@ -81,7 +95,7 @@ def main():
             ]
         )
     )
-    print(f'wrote {args.output}; chosen k={chosen}')
+    print(f'wrote {args.output}; placeholder chosen k={chosen}')
 
 
 if __name__ == '__main__':

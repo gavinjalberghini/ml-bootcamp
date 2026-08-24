@@ -1,43 +1,37 @@
 # [Reading Assignment 2] Ensemble Algorithms
 
-A single classifier often misses structure that a committee can catch.
-Ensemble learning combines models so the group is more stable or more
-accurate than any one member.
+You need: a working single kNN (PA6) and honest metrics (PA2). You have not
+combined models yet.
 
-Read about why ensembles work, and about bagging and boosting as two
-different ways to create diversity. Then think about how those ideas apply
-to kNN — not only “run three distances,” but whether resampling the training
-rows (bagging) or reweighting mistakes (boosting) makes sense for a
-memory-based model.
+You will: learn bagging vs boosting so PA3 can bag **your existing class**
+instead of inventing a new algorithm. Boosting is reading-only; vanilla kNN
+has no trainable weights to boost.
 
-As you read, think about the following:
+## Steps
 
-- How might you combine predictions from multiple kNN models?
-- What is the difference between diversity from **data** (bootstrap samples)
-  and diversity from **the distance**?
-- What benefits could an ensemble provide over a single kNN?
-- What challenges or trade-offs appear (cost, correlation of members,
-  boosting on a model with no trainable weights)?
-- Why is bagging a more natural first ensemble for kNN than boosting?
+1. Read [ensemble learning (Scholarpedia)](http://www.scholarpedia.org/article/Ensemble_learning)
+   or [Wikipedia](https://en.wikipedia.org/wiki/Ensemble_learning).
+2. Read [bootstrap aggregating](https://en.wikipedia.org/wiki/Bootstrap_aggregating).
+3. Read [boosting](https://en.wikipedia.org/wiki/Boosting_(machine_learning)).
+4. Read [bagging (IBM)](https://www.ibm.com/topics/bagging).
+5. Answer every heading in `learning/RA2/answers.md`:
+   - How might you combine predictions from multiple kNN models?
+   - Diversity from **data** (bootstrap) vs diversity from **distance**
+   - Benefits over a single kNN
+   - Cost and correlation trade-offs
+   - Why bagging is a more natural first ensemble for kNN than boosting
+6. Commit and open a PR.
 
-You will implement a bootstrap (bagged) kNN in PA3, and compare it to a
-three-distance committee.
+## What to turn in
+
+- Filled `learning/RA2/answers.md`.
 
 ## Acceptance criteria
 
-Read the supporting documentation and write answers to the questions above in
-`learning/RA2/answers.md`.
+- Every heading has an answer.
+- You can describe, in one paragraph, the bagging loop PA3 will run on
+  `ScaledKNN`.
 
-## Articles
+## Optional research
 
-- [Ensemble learning (Scholarpedia)](http://www.scholarpedia.org/article/Ensemble_learning)
-- [Ensemble learning (Wikipedia)](https://en.wikipedia.org/wiki/Ensemble_learning)
-- [Bootstrap aggregating](https://en.wikipedia.org/wiki/Bootstrap_aggregating)
-- [Boosting (Wikipedia)](https://en.wikipedia.org/wiki/Boosting_(machine_learning))
-- [Bagging (IBM)](https://www.ibm.com/topics/bagging)
-
-## Research (optional)
-
-- Zhou, Z.-H. *Ensemble Methods: Foundations and Algorithms*. Access via
-  your library; DOI overview articles include
-  [10.1002/widm.1249](https://doi.org/10.1002/widm.1249).
+- [10.1002/widm.1249](https://doi.org/10.1002/widm.1249) via your library.

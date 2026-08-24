@@ -1,55 +1,38 @@
 # [Reading Assignment 5] Concept Drift in Online Learning
 
-In RA3 you compared batch processing with streaming data. In a real stream
-the difficulty is not only that instances arrive one at a time — the meaning
-of the data can change while the model is still learning. That change is
-called concept drift, and it is one of the central challenges of online
-and continual learning.
+You need: RA3 (batch vs stream). Look at the `%` comments on
+`learning/resources/data/small_stream.arff` before you write.
 
-Read about concept drift as a problem context. You should understand that
-the joint distribution P_t(x, y) can differ from P_{t+Δ}(x, y), the common
-temporal patterns of drift, and the difference between a change that
-invalidates the decision boundary (real concept drift) and a change that
-only shifts which regions of a still-valid boundary are observed (virtual
-or covariate drift).
+You will: learn real vs virtual drift and prequential evaluation. PA5 will
+implement a sliding window on your existing `predict_one`.
 
-Also read about how online models are evaluated and adapted. Batch
-leave-one-out or train/test splits assume a stationary dataset. Streaming
-evaluation is typically prequential: predict on the new instance first, then
-use its label to update the model. Adaptation strategies include sliding
-windows, explicit drift detectors, and ensembles that add or drop
-classifiers as concepts appear and fade.
+## Steps
 
-As you read, think about the following:
+1. Open `small_stream.arff` and read the header comments (seed, drift index,
+   weights, label map).
+2. Read [introduction to concept drift](https://www.geeksforgeeks.org/machine-learning/introduction-to-concept-drift/).
+3. Read [data drift](https://www.geeksforgeeks.org/machine-learning/data-drift-in-machine-learning/).
+4. Read [a gentle introduction to concept drift](https://machinelearningmastery.com/gentle-introduction-concept-drift-machine-learning/).
+5. Read [detecting and handling data drift](https://machinelearningmastery.com/detecting-handling-data-drift-in-production/).
+6. Answer every heading in `learning/RA5/answers.md`:
+   - Real vs virtual (covariate) drift
+   - Sudden, gradual, incremental, recurring
+   - Why batch models fail; what prequential evaluation is
+   - Sliding windows vs ensembles; window-size trade-offs
+   - How you would detect drift without being told the index
+   - Is the provided stream drift real, virtual, or both? Why, using the
+     header's label map?
+7. Commit and open a PR.
 
-- What is concept drift, and how does real concept drift differ from virtual
-  (covariate) drift?
-- How do sudden, gradual, incremental, and recurring drift differ, and how
-  would a model need to respond to each?
-- Why do models trained in a single batch become unreliable under drift, and
-  what does it mean to evaluate a model prequentially?
-- How can a sliding window or an ensemble help a kNN adapt to drift? What
-  trade-offs come with window size?
-- How could you detect that a drift has occurred if you were not told the
-  drift point in advance?
-- The stream files in `learning/resources/data/` document a sudden drift and
-  a label map in their header comments. Is that real drift, virtual drift,
-  or both? Why?
+## What to turn in
 
-You will apply this in PA5.
+- Filled `learning/RA5/answers.md`.
 
 ## Acceptance criteria
 
-Read the supporting documentation and write answers to the questions above in
-`learning/RA5/answers.md`.
+- Every heading has an answer.
+- You cite the stream file's drift index and label map in the last answer.
 
-## Articles
-
-- [Introduction to concept drift](https://www.geeksforgeeks.org/machine-learning/introduction-to-concept-drift/)
-- [Data drift](https://www.geeksforgeeks.org/machine-learning/data-drift-in-machine-learning/)
-- [A gentle introduction to concept drift](https://machinelearningmastery.com/gentle-introduction-concept-drift-machine-learning/)
-- [Detecting and handling data drift](https://machinelearningmastery.com/detecting-handling-data-drift-in-production/)
-
-## Research (optional)
+## Optional research
 
 - [10.1109/TKDE.2018.2876857](https://doi.org/10.1109/TKDE.2018.2876857)

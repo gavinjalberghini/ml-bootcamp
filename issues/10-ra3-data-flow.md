@@ -1,36 +1,36 @@
 # [Reading Assignment 3] Data Flow and Sampling Contexts
 
-So far every kNN you wrote assumed a file that is complete before you start.
-That is batch learning. Many real systems never have that file: instances
-arrive over time, you cannot store everything, and the sample you train on
-is a choice, not “all the data.”
+You need: batch kNN (PA1–PA3). Every evaluation so far assumed a complete
+file.
 
-Read about batch vs streaming (online) processing, and about sampling
-(random, stratified). You will need this for the drift and imbalance readings
-and for PA5.
+You will: learn batch vs stream and sampling so the later drift tickets are
+not a surprise. You will not write stream code until PA5.
 
-As you read, think about the following:
+## Steps
 
-- When would you prefer batch processing over streaming, and vice versa?
-- What challenges arise when working with streaming data?
-- How can poor sampling introduce bias into a model?
-- How might sampling strategies impact kNN (including the leave-one-out
-  scores you have been reporting)?
-- If you subsample `medium.arff` or `large.arff` to save time, what would
-  stratified sampling preserve that a naive prefix of the file would not?
+1. Read [batch vs stream processing](https://www.geeksforgeeks.org/difference-between-batch-processing-and-stream-processing/).
+2. Read [streaming data (IBM)](https://www.ibm.com/topics/streaming-data).
+3. Read [data sampling](https://www.geeksforgeeks.org/data-analysis/what-is-data-sampling/).
+4. Read [stratified sampling](https://www.geeksforgeeks.org/stratified-sampling-in-machine-learning/).
+5. Answer every heading in `learning/RA3/answers.md`:
+   - When batch vs streaming
+   - Challenges of streaming data
+   - How poor sampling biases a model
+   - How sampling changes kNN (including the leave-one-out scores you have)
+   - If you subsample `medium.arff` or `large.arff`, what stratified sampling
+     preserves that a file prefix would not
+6. Commit and open a PR.
+
+## What to turn in
+
+- Filled `learning/RA3/answers.md`.
 
 ## Acceptance criteria
 
-Read the supporting documentation and write answers to the questions above in
-`learning/RA3/answers.md`.
+- Every heading has an answer.
+- You can say, in one sentence, why PA5 cannot use leave-one-out on the
+  whole stream.
 
-## Articles
+## Optional research
 
-- [Batch vs stream processing](https://www.geeksforgeeks.org/difference-between-batch-processing-and-stream-processing/)
-- [Streaming data (IBM)](https://www.ibm.com/topics/streaming-data)
-- [Data sampling](https://www.geeksforgeeks.org/data-analysis/what-is-data-sampling/)
-- [Stratified sampling](https://www.geeksforgeeks.org/stratified-sampling-in-machine-learning/)
-
-## Research (optional)
-
-- [10.1145/2528412](https://doi.org/10.1145/2528412) — data stream processing survey (ACM; use library access)
+- [10.1145/2528412](https://doi.org/10.1145/2528412) via your library.

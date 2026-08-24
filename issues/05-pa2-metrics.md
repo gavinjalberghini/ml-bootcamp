@@ -1,82 +1,71 @@
 # [Programming Assignment 2] Metrics, Baselines, and Visualizations
 
-A confusion matrix is not enough. These datasets are imbalanced, so a high
-accuracy can still mean the model never finds a rare class. This ticket turns
-your kNN into a report you can trust, and it forces a comparison against a
-classifier that does not look at the features at all.
+You need: PA6 done (`ScaledKNN` imports PA1). You already have confusion
+matrices. These files are imbalanced; accuracy alone is not enough.
 
-Copy forward your scaled kNN (PA6) or PA1 if you must. A skeleton lives at
-`learning/PA2/kNN_report.py`. Keep `--distance`, `--k`, `--p`, and
-`--normalize`. **Stdlib plus matplotlib only. GAI should not implement this
-for you.**
+You will: subclass `ScaledKNN`, add a majority baseline and real metrics,
+and plot them. **GAI should not implement this for you.**
 
-## What to compute
+matplotlib is listed in this file's `# /// script` dependencies. `uv run`
+installs it for this script only. Do not `pip install` it yourself.
 
-Evaluate with the same leave-one-out protocol as PA1/PA6. Then report:
+## Steps
 
-**Majority-class baseline.** Ignore the features. Always predict the most
-frequent class in the file (for leave-one-out you may use the class
-distribution of the neighbor pool so the baseline also excludes the query).
-Give the baseline its own accuracy and confusion matrix. If kNN does not beat
-this, the interesting story is why.
+1. Open `learning/PA2/kNN_report.py`. Keep `import_pa('PA6')` and
+   `class ReportingKNN(PA6.ScaledKNN)`. Confirm the script header lists
+   `matplotlib>=3.8`.
+2. Implement `majority_baseline(labels)`. Ignore features. For each row,
+   predict the most frequent class in the *other* rows (leave-one-out
+   majority) or, if you document it, the global majority. Return
+   `(y_true, y_pred)`.
+3. Implement `metrics_report(y_true, y_pred)` from the confusion matrix:
+   - overall accuracy
+   - macro-averaged precision, recall, F1
+   - weighted-averaged precision, recall, F1
+   - per class: precision, recall, F1, support, sensitivity (recall),
+     specificity (TN/(TN+FP) in that class's one-vs-rest view)
+   If a class has zero predicted positives, precision is 0. State that.
+4. Implement `peak_memory_bytes` (`resource.getrusage` or
+   `/proc/self/status` on Linux).
+5. Implement `write_figures`: a labeled confusion heatmap and a per-class
+   F1 bar chart that includes the baseline's per-class F1. Save images next
+   to the report. Do not drop rare classes.
+6. `leave_one_out` comes from PA6/PA1. Call it; do not rewrite neighbor
+   search here.
+7. Run:
 
-**Overall**
+   ```bash
+   task pa2
+   task pa2 DATA=learning/resources/data/medium.arff NORMALIZE=zscore
+   ```
 
-- Accuracy
-- Macro-averaged precision, recall, and F1
-- Weighted-averaged precision, recall, and F1
+8. In `learning/PA2/output_report.md` answer:
+   - How much of PA1's accuracy on `small.arff` was the majority class?
+   - Why can accuracy and macro-F1 disagree here?
+   - Did z-score on `medium.arff` move macro-F1 more than accuracy?
+9. Commit and open a PR.
 
-**Per class** (every class that appears in the file)
+## Command-line contract
 
-- Precision, recall, F1
-- Support (how many true instances)
-- Sensitivity (same as recall)
-- Specificity (TN / (TN + FP) in the one-vs-rest view of that class)
+`data`, `--distance`, `--k`, `--p`, `--normalize`, `--output` (default
+`output_report.md`).
 
-Define precision and recall from the confusion matrix. If a class has zero
-predicted positives, precision is 0, not undefined — state that choice.
+## What to turn in
 
-**Resources**
-
-- Wall-clock time for the evaluation
-- Peak memory of the Python process
-
-**Plots** (matplotlib; write image files next to the report)
-
-- Confusion matrix as a labeled heatmap or table figure
-- Per-class F1 bar chart, including the majority baseline's per-class F1
-  if you computed it
-
-Do not hide the rare classes. On `small.arff`, classes 2, 3, and 6 will look
-bad; that is the point.
-
-## Outputs
-
-Write `learning/PA2/output_report.md` (`--output`) with settings, baseline
-metrics, kNN metrics, and paths to the figures. Run:
-
-```bash
-task pa2
-task pa2 DATA=learning/resources/data/medium.arff NORMALIZE=zscore
-```
-
-In a short closing section, answer:
-
-- How much of PA1's accuracy on `small.arff` was the majority class?
-- Why can accuracy and macro-F1 disagree here?
-- Did z-score on `medium.arff` move macro-F1 more than accuracy?
+- `learning/PA2/kNN_report.py`
+- `output_report.md`, figure files, and the three answers above
 
 ## Acceptance criteria
 
-- `learning/PA2/kNN_report.py` runs via `task pa2`.
-- The report includes the majority baseline, overall and per-class metrics,
-  time, memory, and at least the two figures above.
-- Macro vs weighted averages are labeled as such.
+- `ReportingKNN` subclasses `ScaledKNN`. Metrics and plots are new; distance
+  is not rewritten.
+- The report includes baseline vs kNN, macro vs weighted, time, and memory.
+- `uv run learning/PA2/kNN_report.py …` installs matplotlib from the script
+  header.
 
 ## References
 
 - [Precision and recall](https://en.wikipedia.org/wiki/Precision_and_recall)
 - [F-score](https://en.wikipedia.org/wiki/F-score)
 - [Macro vs weighted averages](https://www.geeksforgeeks.org/machine-learning/macro-average-and-weighted-average-in-classification/)
-- [Memory of a Python process](https://docs.python.org/3/library/resource.html) (`resource.getrusage`) or `/proc/self/status` on Linux
-- [matplotlib tutorials](https://matplotlib.org/stable/tutorials/pyplot.html)
+- [matplotlib pyplot](https://matplotlib.org/stable/tutorials/pyplot.html)

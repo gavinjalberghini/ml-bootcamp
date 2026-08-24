@@ -1,37 +1,39 @@
 # [Reading Assignment 1] Types of Machine Learning Problems
 
-Before you write a classifier, you need to know what kind of prediction problem
-you are solving. This reading is about classification: how a model is trained
-and evaluated, and how binary, multiclass, and multilabel problems differ.
+You need: ENV done (`uv run` works). You have not written a classifier yet.
 
-The datasets in `learning/resources/data/` are classification problems. They are
-not multilabel, and the class codes are not numeric targets. You will implement
-only kNN in this mentorship; the point of RA1 is to know which problem kNN is
-solving on these files, and which problems it is not.
+You will: learn which prediction problem these files are, so PA1 is not a
+guess. The datasets are classification. They are not multilabel. Class codes
+are categories, not numeric targets.
 
-As you read, think about the following:
+## Steps
 
-- How does classification differ from regression?
-- What distinguishes multiclass from multilabel problems?
-- How do evaluation metrics change depending on the classification type?
-- What challenges arise as the number of classes or labels increases?
-- Which type is `small.arff`? Which type is `medium.arff`? What would you have
-  to change about the files or the label to turn one of them into a binary
-  problem, or (hypothetically) a multilabel problem?
+1. Read `learning/resources/data/README.md` all the way through. Note the
+   class counts on `small.arff` and `medium.arff`.
+2. Read [classification vs regression](https://www.geeksforgeeks.org/machine-learning/ml-classification-vs-regression/).
+3. Read [classification (IBM)](https://www.ibm.com/topics/classification-machine-learning).
+4. Read [types of classification tasks](https://machinelearningmastery.com/types-of-classification-in-machine-learning/).
+5. Skim the [scikit-learn multiclass / multilabel notes](https://scikit-learn.org/stable/modules/multiclass.html)
+   for problem types only. You will not use that library in the PAs.
+6. Open `learning/RA1/answers.md`. Write an answer under each heading:
+   - How does classification differ from regression?
+   - What distinguishes multiclass from multilabel?
+   - How do evaluation metrics change with the classification type?
+   - What challenges arise as the number of classes or labels increases?
+   - Which type is `small.arff`? Which type is `medium.arff`? What would you
+     change to make one binary, or (hypothetically) multilabel?
+7. Commit `learning/RA1/answers.md` and open a pull request.
 
-You will build on this in PA1 and PA6. Notes may be beneficial.
+## What to turn in
+
+- The filled `learning/RA1/answers.md` on a PR.
 
 ## Acceptance criteria
 
-Read the supporting documentation and write answers to the questions above in
-`learning/RA1/answers.md`. Consult [this](https://github.com/adam-p/markdown-here/wiki/markdown-cheatsheet)
-markdown guide as needed. Use the dataset README at
-`learning/resources/data/README.md` when you map problem types to the files.
+- Every heading in the answers file has a written answer.
+- You name the problem type of both provided files using the data README,
+  not a guess.
 
-## Articles
+## References
 
-- [Classification vs regression (GeeksforGeeks)](https://www.geeksforgeeks.org/machine-learning/ml-classification-vs-regression/)
-- [Classification in machine learning (IBM)](https://www.ibm.com/topics/classification-machine-learning)
-- [Types of classification tasks (Machine Learning Mastery)](https://machinelearningmastery.com/types-of-classification-in-machine-learning/)
-- [Multiclass classification (scikit-learn user guide)](https://scikit-learn.org/stable/modules/multiclass.html) — read for the problem types; do not use the library in later PAs
-- [Multilabel classification (scikit-learn user guide)](https://scikit-learn.org/stable/modules/multiclass.html#multilabel-classification)
+Markdown help: [cheatsheet](https://github.com/adam-p/markdown-here/wiki/markdown-cheatsheet).

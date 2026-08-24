@@ -1,24 +1,41 @@
-#!/usr/bin/env python3
-"""PA5: prequential sliding-window kNN. Stdlib only for the model."""
+# /// script
+# requires-python = ">=3.10"
+# dependencies = []
+# ///
+"""PA5: prequential window. Predict with PA6.ScaledKNN.predict_one; score with PA2."""
 from __future__ import annotations
 
 import argparse
+import sys
 import time
 from pathlib import Path
 
+LEARNING = Path(__file__).resolve().parent.parent
+if str(LEARNING) not in sys.path:
+    sys.path.insert(0, str(LEARNING))
 
-def read_arff(path: str):
-    raise NotImplementedError
+from load_assignment import import_pa
+
+PA2 = import_pa('PA2')
+PA6 = import_pa('PA6')
 
 
-def predict_one(window_x, window_y, query, k: int, weighted: bool, normalize: str):
-    """Predict using only the current window. Fit any scaler on the window."""
-    raise NotImplementedError
+class OnlineKNN(PA6.ScaledKNN):
+    """Sliding-window kNN. Memory is the last `window` labeled instances."""
 
+    def __init__(self, k: int = 3, distance: int = 1, p: float = 3.0, normalize: str = 'none', window: int = 50, weighted_vote: bool = False):
+        super().__init__(k=k, distance=distance, p=p, normalize=normalize)
+        if window < 1:
+            raise ValueError('window must be >= 1')
+        self.window = window
+        self.weighted_vote = weighted_vote
 
-def run_stream(features, labels, k: int, window: int, weighted: bool, normalize: str):
-    """Prequential loop: predict, then append; drop the oldest when over window."""
-    raise NotImplementedError
+    def vote(self, neighbor_labels: list, neighbor_weights: list | None = None) -> str:
+        raise NotImplementedError('uniform majority, or inverse-frequency weights when flagged')
+
+    def run_stream(self, features, labels):
+        """Prequential: predict, then append; drop the oldest when over window."""
+        raise NotImplementedError
 
 
 def parse_args():
@@ -35,8 +52,10 @@ def parse_args():
 def main():
     args = parse_args()
     started = time.perf_counter()
-    features, labels = read_arff(args.data)
-    results = run_stream(features, labels, args.k, args.window, args.weighted_vote, args.normalize)
+    model = OnlineKNN(k=args.k, normalize=args.normalize, window=args.window, weighted_vote=args.weighted_vote)
+    features, labels = model.read_arff(args.data)
+    results = model.run_stream(features, labels)
+    reporter = PA2.ReportingKNN(k=args.k, normalize=args.normalize)
     elapsed = time.perf_counter() - started
     Path(args.output).write_text(
         '\n'.join(
@@ -50,6 +69,7 @@ def main():
                 f'- weighted_vote: {args.weighted_vote}',
                 f'- elapsed_s: {elapsed:.4f}',
                 f'- results: {results}',
+                f'- reporter_ready: {reporter.__class__.__name__}',
                 '',
                 '## Discussion',
                 '',
