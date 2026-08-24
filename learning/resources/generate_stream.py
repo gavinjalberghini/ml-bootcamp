@@ -93,7 +93,7 @@ def shiftedWeights(classes, counts, minCommon=10):
 
     Classes with fewer than minCommon source examples keep their original
     share. Boosting those would just repeat two or three rows and stop
-    looking like the dataset from PA1-PA4.
+    looking like the dataset from pa-knn through pa-gpu.
     """
     empirical = empiricalWeights(classes, counts)
     common = [c for c in classes if counts[c] >= minCommon]

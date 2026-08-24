@@ -10,7 +10,7 @@ Class values are integer codes. They are categories, not quantities: quality
 ## `small.arff`
 
 UCI Ecoli protein-localization style data. 336 instances, 7 numeric features,
-8 classes. This is the default file for PA1–PA4 and PA6–PA7.
+8 classes. This is the default file for the stationary programming assignments.
 
 | Attribute | Meaning |
 | --- | --- |
@@ -42,8 +42,8 @@ predicts `0` is about 43% accurate and useless on the rare sites.
 UCI Wine Quality (white). 4898 instances, 11 numeric features, quality scores
 treated as 7 classes. Feature ranges differ by orders of magnitude (density
 near 1, residual sugar in the tens, total sulfur dioxide in the hundreds), so
-unscaled distances are dominated by a few columns. That is intentional; RA7
-and PA6 exist because of it.
+unscaled distances are dominated by a few columns. That is intentional; ra-scaling
+and pa-scaled exist because of it.
 
 | Attribute | Meaning |
 | --- | --- |
@@ -73,7 +73,7 @@ and PA6 exist because of it.
 ## `large.arff`
 
 Same schema and class proportions as `medium.arff`, expanded to 19592
-instances. Use it as a stress set for timing, memory, and PA4 GPU comparison.
+instances. Use it as a stress set for timing, memory, and pa-gpu GPU comparison.
 Leave-one-out on this file is expensive; a subsample or a holdout is fine
 unless a ticket says otherwise.
 
@@ -85,7 +85,7 @@ add light jitter, inject a sudden real concept drift (label map), and change
 class weights after the drift index. Read the `%` comments at the top of each
 file for seed, drift index, weights, and the label map.
 
-## Binary task (PA6)
+## Binary task (pa-scaled)
 
 When a ticket asks for a binary view of the same files:
 

@@ -1,8 +1,7 @@
 # https://taskfile.dev
 #
 # Each assignment is a uv script (PEP 723 header in the .py file).
-# `uv run file.py` installs that file's dependencies. There is no project venv
-# to activate. `task setup` only checks that uv exists.
+# Task names match ticket slugs: knn, scaled, metrics, ...
 version: '3'
 
 vars:
@@ -26,13 +25,13 @@ tasks:
     cmds:
       - uv --version
 
-  env:
-    desc: 'ENV: run the uv hello script'
+  uv:
+    desc: 'uv ticket: run the hello script'
     cmds:
-      - uv run {{.ROOT_DIR}}/learning/ENV/hello.py
+      - uv run {{.ROOT_DIR}}/learning/uv/hello.py
 
   generate-stream:
-    desc: 'Regenerate drifting stream ARFF files from small.arff and medium.arff'
+    desc: 'Regenerate drifting stream ARFF files'
     cmds:
       - uv run {{.ROOT_DIR}}/learning/resources/generate_stream.py {{.ROOT_DIR}}/learning/resources/data/small.arff --output {{.ROOT_DIR}}/learning/resources/data/small_stream.arff --length 800 --drift 400 --seed 5
       - uv run {{.ROOT_DIR}}/learning/resources/generate_stream.py {{.ROOT_DIR}}/learning/resources/data/medium.arff --output {{.ROOT_DIR}}/learning/resources/data/medium_stream.arff --length 2000 --drift 1000 --seed 5
@@ -42,50 +41,60 @@ tasks:
     cmds:
       - uv run {{.ROOT_DIR}}/scripts/create_issues.py
 
-  pa1:
-    desc: 'PA1: kNN with leave-one-out validation (stdlib only)'
-    dir: learning/PA1
+  github-rules:
+    desc: 'Apply main-branch ruleset (no direct push; PRs need review)'
+    cmds:
+      - uv run {{.ROOT_DIR}}/scripts/setup_github_rules.py
+
+  lint-commits:
+    desc: 'Check commit subjects from origin/main to HEAD'
+    cmds:
+      - python3 {{.ROOT_DIR}}/scripts/lint_commits.py --base origin/main --head HEAD
+
+  knn:
+    desc: 'pa-knn: leave-one-out kNN'
+    dir: learning/pa-knn
     cmds:
       - uv run kNN.py {{.DATA_ABS}} --distance {{.DISTANCE}} --k {{.K}} --p {{.P}}
 
-  pa6:
-    desc: 'PA6: normalized kNN; multiclass or binary task'
-    dir: learning/PA6
+  scaled:
+    desc: 'pa-scaled: normalize + binary vs multiclass'
+    dir: learning/pa-scaled
     cmds:
       - uv run kNN_scaled.py {{.DATA_ABS}} --distance {{.DISTANCE}} --k {{.K}} --p {{.P}} --normalize {{.NORMALIZE}} --task {{.TASK}}
 
-  pa2:
-    desc: 'PA2: kNN report with baseline, per-class metrics, time, and memory'
-    dir: learning/PA2
+  metrics:
+    desc: 'pa-metrics: baseline, per-class metrics, plots'
+    dir: learning/pa-metrics
     cmds:
       - uv run kNN_report.py {{.DATA_ABS}} --distance {{.DISTANCE}} --k {{.K}} --p {{.P}} --normalize {{.NORMALIZE}}
 
-  pa7:
-    desc: 'PA7: choose k on a validation split; report vote-fraction confidence'
-    dir: learning/PA7
+  selection:
+    desc: 'pa-selection: choose k; vote fractions'
+    dir: learning/pa-selection
     cmds:
       - uv run kNN_select.py {{.DATA_ABS}} --k-grid {{.K_GRID}} --distance {{.DISTANCE}} --p {{.P}} --normalize {{.NORMALIZE}}
 
-  pa3:
-    desc: 'PA3: bagged kNN ensemble, plus a three-distance comparison'
-    dir: learning/PA3
+  ensemble:
+    desc: 'pa-ensemble: bagged kNN + distance committee'
+    dir: learning/pa-ensemble
     cmds:
       - uv run kNN_ensemble.py {{.DATA_ABS}} --k {{.K}} --normalize {{.NORMALIZE}}
 
-  pa4:
-    desc: 'PA4: vectorized / GPU kNN (add cupy to this file header for GPU)'
-    dir: learning/PA4
+  gpu:
+    desc: 'pa-gpu: vectorized / GPU kNN'
+    dir: learning/pa-gpu
     cmds:
       - uv run knn_gpu.py {{.DATA_ABS}} --k {{.K}} --normalize {{.NORMALIZE}}
 
-  pa5:
-    desc: 'PA5: online sliding-window kNN on a drifting stream'
-    dir: learning/PA5
+  online:
+    desc: 'pa-online: sliding-window kNN'
+    dir: learning/pa-online
     cmds:
       - uv run online_knn.py {{.ROOT_DIR}}/learning/resources/data/small_stream.arff --k {{.K}} --window {{.WINDOW}}
 
-  pa5:weighted:
-    desc: 'PA5 with inverse-frequency neighbor votes'
-    dir: learning/PA5
+  online:weighted:
+    desc: 'pa-online with inverse-frequency votes'
+    dir: learning/pa-online
     cmds:
       - uv run online_knn.py {{.ROOT_DIR}}/learning/resources/data/small_stream.arff --k {{.K}} --window {{.WINDOW}} --weighted-vote

@@ -3,7 +3,7 @@ name = "ml-bootcamp"
 version = "0.1.0"
 requires-python = ">=3.10"
 # Assignment dependencies are declared in each script's PEP 723 header.
-# `uv run learning/PA2/kNN_report.py` installs matplotlib for that file only.
+# `uv run learning/pa-metrics/kNN_report.py` installs matplotlib for that file only.
 dependencies = []
 
 [tool.uv]
