@@ -25,7 +25,7 @@ Tickets use **slugs** that match folders and Task names: `pa-knn`,
    `main`. Org owners can still push (so deploy works):
 
    ```bash
-   python3 scripts/setup_org_rules.py --org YOUR_ORG
+   scripts/setup_org_rules.sh --org YOUR_ORG
    ```
 
    The ruleset matches `ml-bootcamp-*` and skips `ml-bootcamp`.
@@ -39,7 +39,7 @@ repository access.
 From a clone of this source repo, after `gh auth login`:
 
 ```bash
-python3 scripts/deploy_student.py --org YOUR_ORG --student github-login
+scripts/deploy_student.sh --org YOUR_ORG --student github-login
 ```
 
 That command:

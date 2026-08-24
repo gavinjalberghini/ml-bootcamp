@@ -39,22 +39,22 @@ tasks:
   issues:
     desc: 'Mentor: create GitHub issues from issues/*.md'
     cmds:
-      - python3 {{.ROOT_DIR}}/scripts/create_issues.py {{.CLI_ARGS}}
+      - bash {{.ROOT_DIR}}/scripts/create_issues.sh {{.CLI_ARGS}}
 
   github-rules:
     desc: 'Mentor: apply per-repo main protection'
     cmds:
-      - python3 {{.ROOT_DIR}}/scripts/setup_github_rules.py {{.CLI_ARGS}}
+      - bash {{.ROOT_DIR}}/scripts/setup_github_rules.sh {{.CLI_ARGS}}
 
   org-rules:
     desc: 'Mentor: apply org ruleset for ml-bootcamp-* repos'
     cmds:
-      - python3 {{.ROOT_DIR}}/scripts/setup_org_rules.py {{.CLI_ARGS}}
+      - bash {{.ROOT_DIR}}/scripts/setup_org_rules.sh {{.CLI_ARGS}}
 
   deploy:
     desc: 'Mentor: create a student repo in the org'
     cmds:
-      - python3 {{.ROOT_DIR}}/scripts/deploy_student.py {{.CLI_ARGS}}
+      - bash {{.ROOT_DIR}}/scripts/deploy_student.sh {{.CLI_ARGS}}
 
   lint-commits:
     desc: 'Check commit subjects from origin/main to HEAD'
