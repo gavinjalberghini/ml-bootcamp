@@ -1,3 +1,7 @@
+% UCI Ecoli-style protein localization. 336 instances, 7 features, 8 classes.
+% Features: A1=mcg A2=gvh A3=lip A4=chg A5=aac A6=alm1 A7=alm2
+% class is a category, not a quantity. Mapping: 0=cp 1=im 2=imS 3=imL 4=imU 5=om 6=omL 7=pp
+% See learning/resources/data/README.md. Do not use the class column in distance.
 @relation small
 @attribute A1 NUMERIC
 @attribute A2 NUMERIC
@@ -6,7 +10,7 @@
 @attribute A5 NUMERIC
 @attribute A6 NUMERIC
 @attribute A7 NUMERIC
-@attribute class NUMERIC
+@attribute class {0,1,2,3,4,5,6,7}
 @data
 49.0,29.0,48.0,5.0,56.0,24.0,35.0,0
 7.0,4.0,48.0,5.0,54.0,35.0,44.0,0

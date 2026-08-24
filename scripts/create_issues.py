@@ -4,6 +4,7 @@
 Usage (from the repo root, after `gh auth login`):
     python3 scripts/create_issues.py
     python3 scripts/create_issues.py --repo owner/name
+    python3 scripts/create_issues.py --dry-run
 """
 import argparse
 import pathlib

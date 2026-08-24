@@ -1,11 +1,11 @@
 # uv run learning/resources/generate_stream.py learning/resources/data/small.arff \
 #     --output learning/resources/data/small_stream.arff
-"""Build a drifting, imbalanced ARFF stream from an existing FVAA dataset.
+"""Build a drifting, imbalanced ARFF stream from a stationary dataset.
 
 The generator keeps the same attributes and class values as the source file.
 It resamples those instances (with light jitter) so the stream looks like the
-data from PA1-PA4, then applies a sudden real concept drift and a change in
-class proportions at --drift.
+data from the batch assignments, then applies a sudden real concept drift and
+a change in class proportions at --drift.
 
 This script is provided so you can inspect or regenerate the stream files.
 Writing your own generator is optional, not required.
@@ -148,7 +148,7 @@ def writeStream(path, relation, attributes, metaLines, rows):
 
 
 def parseArgs():
-    parser = argparse.ArgumentParser(description='Generate a drifting ARFF stream from an existing FVAA dataset')
+    parser = argparse.ArgumentParser(description='Generate a drifting ARFF stream from a stationary ARFF dataset')
     parser.add_argument('source', help='source ARFF (small.arff, medium.arff, or large.arff)')
     parser.add_argument('--output', required=True, help='destination ARFF path')
     parser.add_argument('--length', type=int, default=800, help='number of stream instances')
@@ -201,6 +201,7 @@ def main():
         f'% pre-drift realized counts: {dict(sorted(preCounts.items()))}',
         f'% post-drift realized counts: {dict(sorted(postCounts.items()))}',
         '% jitter is gaussian noise at --jitter * feature std; class values match the source file',
+        '% class codes are categories (see learning/resources/data/README.md); do not use them as features',
     ]
     writeStream(args.output, streamRelation, attributes, metaLines, rows)
     print(f'wrote {args.length} instances to {args.output}')

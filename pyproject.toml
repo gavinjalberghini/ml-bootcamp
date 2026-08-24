@@ -2,7 +2,9 @@
 name = "ml-bootcamp"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "matplotlib>=3.8",
+]
 
 [project.optional-dependencies]
 # GPU support is opt-in because it requires CUDA hardware/drivers.
