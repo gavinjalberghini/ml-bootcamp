@@ -8,6 +8,7 @@
 % pre-drift realized counts: {'3': 6, '4': 33, '5': 289, '6': 448, '7': 183, '8': 40, '9': 1}
 % post-drift realized counts: {'3': 1, '4': 27, '5': 171, '6': 298, '7': 35, '8': 466, '9': 2}
 % jitter is gaussian noise at --jitter * feature std; class values match the source file
+% class codes are categories (see learning/resources/data/README.md); do not use them as features
 @relation medium_stream
 @attribute A1 NUMERIC
 @attribute A2 NUMERIC
@@ -20,7 +21,7 @@
 @attribute A9 NUMERIC
 @attribute A10 NUMERIC
 @attribute A11 NUMERIC
-@attribute class NUMERIC
+@attribute class {3,4,5,6,7,8,9}
 @data
 9.42824,0.40844,0.319132,5.92791,0.0282026,20.1725,169.882,0.994715,3.08301,0.428369,10.5546,5
 8.20613,0.310034,0.439807,6.86527,0.0473778,18.5683,85.4386,0.996284,3.22709,0.635433,10.5549,5

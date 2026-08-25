@@ -1,20 +1,18 @@
 # https://taskfile.dev
 #
-# Every task runs through `uv run`, which automatically creates/syncs the
-# project virtual environment from pyproject.toml + uv.lock on first use.
-# No manual pip/venv management is needed -- just install uv and task.
-#
-# Student work lives under learning/<your_name>/. Override STUDENT when
-# running assignment tasks, e.g.:
-#   task pa1 STUDENT=alex DATA=learning/resources/data/medium.arff
+# Each assignment is a uv script (PEP 723 header in the .py file).
+# Task names match ticket slugs: knn, scaled, metrics, ...
 version: '3'
 
 vars:
-  STUDENT: 'student'
   DATA: 'learning/resources/data/small.arff'
   K: '3'
   DISTANCE: '1' # 1=euclidean, 2=manhattan, 3=minkowski
   P: '3.0'      # minkowski exponent, only used when DISTANCE=3
+  WINDOW: '50'
+  NORMALIZE: 'none' # none | zscore | minmax
+  TASK: 'multiclass' # multiclass | binary
+  K_GRID: '1,3,5,7,9'
   DATA_ABS: '{{if hasPrefix "/" .DATA}}{{.DATA}}{{else}}{{.ROOT_DIR}}/{{.DATA}}{{end}}'
 
 tasks:
@@ -23,48 +21,95 @@ tasks:
       - task: setup
 
   setup:
-    desc: Create/sync the uv-managed virtual environment
+    desc: Verify uv is installed (dependencies live in each script header)
     cmds:
-      - uv sync
+      - uv --version
+
+  uv:
+    desc: 'uv ticket: run the hello script'
+    cmds:
+      - uv run {{.ROOT_DIR}}/learning/uv/hello.py
+
+  taskfile:
+    desc: 'taskfile ticket: run the student Taskfile hello'
+    cmds:
+      - task --taskfile {{.ROOT_DIR}}/learning/taskfile/Taskfile.yml hello
 
   generate-stream:
-    desc: 'Regenerate drifting stream ARFF files from small.arff and medium.arff'
+    desc: 'Regenerate drifting stream ARFF files'
     cmds:
-      - uv run python learning/resources/generate_stream.py learning/resources/data/small.arff --output learning/resources/data/small_stream.arff --length 800 --drift 400 --seed 5
-      - uv run python learning/resources/generate_stream.py learning/resources/data/medium.arff --output learning/resources/data/medium_stream.arff --length 2000 --drift 1000 --seed 5
+      - uv run {{.ROOT_DIR}}/learning/resources/generate_stream.py {{.ROOT_DIR}}/learning/resources/data/small.arff --output {{.ROOT_DIR}}/learning/resources/data/small_stream.arff --length 800 --drift 400 --seed 5
+      - uv run {{.ROOT_DIR}}/learning/resources/generate_stream.py {{.ROOT_DIR}}/learning/resources/data/medium.arff --output {{.ROOT_DIR}}/learning/resources/data/medium_stream.arff --length 2000 --drift 1000 --seed 5
 
-  pa1:
-    desc: 'PA1: kNN with leave-one-out validation (stdlib only)'
-    dir: learning/{{.STUDENT}}/PA1
+  issues:
+    desc: 'Mentor: create GitHub issues from issues/*.md'
+    cmds:
+      - bash {{.ROOT_DIR}}/scripts/create_issues.sh {{.CLI_ARGS}}
+
+  github-rules:
+    desc: 'Mentor: apply per-repo main protection'
+    cmds:
+      - bash {{.ROOT_DIR}}/scripts/setup_github_rules.sh {{.CLI_ARGS}}
+
+  org-rules:
+    desc: 'Mentor: apply org ruleset for ml-bootcamp-* repos'
+    cmds:
+      - bash {{.ROOT_DIR}}/scripts/setup_org_rules.sh {{.CLI_ARGS}}
+
+  deploy:
+    desc: 'Mentor: create a student repo in the org'
+    cmds:
+      - bash {{.ROOT_DIR}}/scripts/deploy_student.sh {{.CLI_ARGS}}
+
+  lint-commits:
+    desc: 'Check commit subjects from origin/main to HEAD'
+    cmds:
+      - python3 {{.ROOT_DIR}}/scripts/lint_commits.py --base origin/main --head HEAD
+
+  knn:
+    desc: 'pa-knn: leave-one-out kNN'
+    dir: learning/pa-knn
     cmds:
       - uv run kNN.py {{.DATA_ABS}} --distance {{.DISTANCE}} --k {{.K}} --p {{.P}}
 
-  pa2:
-    desc: 'PA2: kNN report with per-class metrics, time, and memory usage'
-    dir: learning/{{.STUDENT}}/PA2
+  scaled:
+    desc: 'pa-scaled: normalize + binary vs multiclass'
+    dir: learning/pa-scaled
     cmds:
-      - uv run kNN_report.py {{.DATA_ABS}} --distance {{.DISTANCE}} --k {{.K}} --p {{.P}}
+      - uv run kNN_scaled.py {{.DATA_ABS}} --distance {{.DISTANCE}} --k {{.K}} --p {{.P}} --normalize {{.NORMALIZE}} --task {{.TASK}}
 
-  pa3:
-    desc: 'PA3: ensemble of three kNNs with different distance metrics'
-    dir: learning/{{.STUDENT}}/PA3
+  metrics:
+    desc: 'pa-metrics: baseline, per-class metrics, plots'
+    dir: learning/pa-metrics
     cmds:
-      - uv run kNN_ensemble.py {{.DATA_ABS}}
+      - uv run kNN_report.py {{.DATA_ABS}} --distance {{.DISTANCE}} --k {{.K}} --p {{.P}} --normalize {{.NORMALIZE}}
 
-  pa4:
-    desc: 'PA4: GPU kNN vs CPU baseline (falls back to CPU without cupy)'
-    dir: learning/{{.STUDENT}}/PA4
+  selection:
+    desc: 'pa-selection: choose k; vote fractions'
+    dir: learning/pa-selection
     cmds:
-      - uv run knn_gpu.py {{.DATA_ABS}} --k {{.K}}
+      - uv run kNN_select.py {{.DATA_ABS}} --k-grid {{.K_GRID}} --distance {{.DISTANCE}} --p {{.P}} --normalize {{.NORMALIZE}}
 
-  pa4:gpu:
-    desc: 'PA4 with cupy installed (requires CUDA 12 hardware/drivers)'
-    dir: learning/{{.STUDENT}}/PA4
+  ensemble:
+    desc: 'pa-ensemble: bagged kNN + distance committee'
+    dir: learning/pa-ensemble
     cmds:
-      - uv run --extra pa4-gpu knn_gpu.py {{.DATA_ABS}} --k {{.K}}
+      - uv run kNN_ensemble.py {{.DATA_ABS}} --k {{.K}} --normalize {{.NORMALIZE}}
 
-  pa5:
-    desc: 'PA5: online sliding-window kNN on a drifting stream'
-    dir: learning/{{.STUDENT}}/PA5
+  gpu:
+    desc: 'pa-gpu: vectorized / GPU kNN'
+    dir: learning/pa-gpu
     cmds:
-      - uv run online_knn.py {{.ROOT_DIR}}/learning/resources/data/small_stream.arff --k {{.K}} --window 50
+      - uv run knn_gpu.py {{.DATA_ABS}} --k {{.K}} --normalize {{.NORMALIZE}}
+
+  online:
+    desc: 'pa-online: sliding-window kNN'
+    dir: learning/pa-online
+    cmds:
+      - uv run online_knn.py {{.ROOT_DIR}}/learning/resources/data/small_stream.arff --k {{.K}} --window {{.WINDOW}}
+
+  online:weighted:
+    desc: 'pa-online with inverse-frequency votes'
+    dir: learning/pa-online
+    cmds:
+      - uv run online_knn.py {{.ROOT_DIR}}/learning/resources/data/small_stream.arff --k {{.K}} --window {{.WINDOW}} --weighted-vote

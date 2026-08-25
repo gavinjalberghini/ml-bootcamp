@@ -1,75 +1,202 @@
 # ML Bootcamp
 
-Template repository for a mentorship sequence in applied machine learning.
-Students implement each assignment from the GitHub issues (also stored under
-`issues/` so the tickets travel with the template).
+Source content for a mentorship in applied machine learning classification.
+Mentors instantiate a **student repo inside a GitHub organization they own**.
+Students do not own the repo and do not hand over a PAT.
 
-Work goes in `learning/<your_name>/`. Shared data and tooling live in
-`learning/resources/`.
+If you are the student: accept the org invite, then open the
+[git](issues/00-git.md) issue. Work happens under `learning/`.
 
-## Prerequisites
+kNN is the only algorithm students implement. Each programming assignment
+**imports the previous class** and adds one facet.
 
-- [uv](https://docs.astral.sh/uv/getting-started/installation/)
-- [Task](https://taskfile.dev/installation/)
-- Git and a GitHub account (see Programming Assignment 0)
+Tickets use **slugs** that match folders and Task names: `pa-knn`,
+`ra-scaling`, `lr-jetson`. Table order is learning order.
 
-## Setup
+## Mentor: one-time org setup
+
+1. Create a GitHub organization (free orgs can hold private repos).
+2. Keep this repository as the source of truth. You can leave it on your
+   user account or move it into the org as `ml-bootcamp` (not
+   `ml-bootcamp-*`).
+3. Install the [GitHub CLI](https://cli.github.com/) and `gh auth login` as
+   an **org owner**.
+4. Apply the org ruleset so every student repo requires a reviewed PR into
+   `main`. Org owners can still push (so deploy works):
+
+   ```bash
+   scripts/setup_org_rules.sh --org YOUR_ORG
+   ```
+
+   The ruleset matches `ml-bootcamp-*` and skips `ml-bootcamp`.
+
+Give students **Write** on their repo only, not Admin and not org Owner.
+Invite them as an outside collaborator, or as an org member with no default
+repository access.
+
+## Mentor: instantiate a student
+
+From a clone of this source repo, after `gh auth login`:
 
 ```bash
-task setup
+scripts/deploy_student.sh --org YOUR_ORG --student github-login
 ```
+
+That command:
+
+1. Creates `YOUR_ORG/ml-bootcamp-<login>` (private by default).
+2. Pushes this source tree to that repo’s `main`.
+3. Invites the student with **Write**.
+4. Opens one GitHub issue per file in `issues/` (filename order).
+5. Applies per-repo `main` protection (backup for the org ruleset).
+
+Optional flags: `--public`, `--name other-repo`, `--ref main`,
+`--org-member`, `--dry-run`. Re-running skips existing issues and does not
+overwrite student commits unless you pass `--force-source`.
+
+```bash
+export ML_BOOTCAMP_ORG=YOUR_ORG
+task deploy -- --student github-login
+task org-rules
+```
+
+Tell the student the repo URL and that they should start at the **git**
+issue. You already have access; they open PRs, you review.
+
+At the end of the mentorship they can fork the repo to their account if
+they want a portfolio copy.
+
+## Git and GitHub (student workflow)
+
+Do not push to `main`. Branch, PR, mentor review. Commits are
+`type(scope): description` (`.github/commit-convention.md`). CI lints
+subjects on every PR.
+
+## Python and uv
+
+Assignments are [uv](https://docs.astral.sh/uv/) **scripts**, not a project
+venv. Each `learning/<slug>/…py` file starts with a [PEP 723](https://peps.python.org/pep-0723/)
+header. `uv run that_file.py` reads **that file's** `requires-python` and
+`dependencies`. There is nothing to activate.
+
+Install Python 3.10+ and uv in the [uv](issues/01-uv.md) ticket, then Task
+in the [taskfile](issues/02-taskfile.md) ticket. Then:
+
+```bash
+uv run learning/uv/hello.py
+task uv
+task knn
+```
+
+`task knn` is the same `uv run` with the flags from the root `Taskfile.yml`.
+Students write their own Taskfile under `learning/taskfile/`; they do not
+edit the root file.
+
+Third-party packages are declared in the file that uses them (matplotlib in
+`pa-metrics` / `pa-selection`; optional CuPy in `pa-gpu`'s header). Importing
+an earlier script does **not** inherit its uv dependencies — re-list anything
+you still call.
+
+## How code is reused
+
+`learning/load_assignment.py` loads an earlier assignment as a module.
+
+| You write | Class | Imports |
+| --- | --- | --- |
+| `pa-knn` | `KNN` | — |
+| `pa-scaled` | `ScaledKNN(KNN)` | `pa-knn` |
+| `pa-metrics` | `ReportingKNN(ScaledKNN)` | `pa-scaled` |
+| `pa-selection` | `SelectingKNN(ScaledKNN)` | `pa-scaled` + `pa-metrics` |
+| `pa-ensemble` | `EnsembleKNN(ScaledKNN)` | `pa-scaled` + `pa-metrics` |
+| `pa-gpu` | `GpuKNN(ScaledKNN)` | `pa-scaled` + `pa-metrics` |
+| `pa-online` | `OnlineKNN(ScaledKNN)` | `pa-scaled` + `pa-metrics` |
+
+Do not copy `kNN.py` into the next folder. The skeletons already call
+`import_pa('pa-knn')` (or `pa-scaled` / `pa-metrics`). Keep the class names.
+
+Required methods include a **sudo** comment: a vague sketch of the idea, not
+runnable Python. Rewrite it yourself. Do not paste it as code.
+
+## Stretch goals
+
+Every ticket has an optional stretch goal. Its job is to pose a harder
+challenge after the required work is done — not to unlock the next
+assignment.
+
+- Skip any stretch you want. The next ticket never imports stretch methods
+  and never requires `stretch.md`.
+- Put stretch writeups in `learning/<assignment>/stretch.md` (or the extra
+  heading in a reading's `answers.md`).
+- Do not change required method names or the `none` / `zscore` / `minmax`
+  contract to “finish” a stretch. Isolation is the point: a failed stretch
+  must not break `pa-scaled` importing `pa-knn`.
 
 ## Assignments
 
-| Ticket | Path | Notes |
-| --- | --- | --- |
-| [PA0](issues/00-pa0-git-learning.md) | `learning/<your_name>/README.md` | git clone, branch, PR |
-| [RA1](issues/01-ra1-types-of-ml-problems.md) | `learning/<your_name>/RA1/answers.md` | classification types |
-| [PA1](issues/02-pa1-knn.md) | `learning/<your_name>/PA1/kNN.py` | stdlib kNN, three distances |
-| [RA2](issues/03-ra2-ensembles.md) | `learning/<your_name>/RA2/answers.md` | bagging and boosting |
-| [PA2](issues/04-pa2-visualizing.md) | `learning/<your_name>/PA2/` | per-class metrics, time, memory |
-| [RA3](issues/05-ra3-data-flow.md) | `learning/<your_name>/RA3/answers.md` | batch vs streaming, sampling |
-| [PA3](issues/06-pa3-knn-ensemble.md) | `learning/<your_name>/PA3/kNN_ensemble.py` | three kNNs, majority vote |
-| [RA4](issues/07-ra4-heterogeneous.md) | `learning/<your_name>/RA4/answers.md` | CPU/GPU architectures |
-| [PA4](issues/08-pa4-gpu-knn.md) | `learning/<your_name>/PA4/knn_gpu.py` | optional cupy (`--extra pa4-gpu`) |
-| [RA5](issues/09-ra5-concept-drift.md) | `learning/<your_name>/RA5/answers.md` | concept drift |
-| [RA6](issues/10-ra6-class-imbalance.md) | `learning/<your_name>/RA6/answers.md` | class imbalance in streams |
-| [PA5](issues/11-pa5-online-knn.md) | `learning/<your_name>/PA5/online_knn.py` | online kNN, sliding window |
-| [LR1](issues/12-lr1-jetson-survey.md) | `learning/<your_name>/LR1/AI_Jetson_Survey.md` | literature review |
-| [LR2](issues/13-lr2-ros-slam.md) | `learning/<your_name>/LR2/ROS_Jetson_SLAM.md` | literature review |
+Do them in **table order**. The slug is the ID.
 
-Programming assignments are stdlib-only except PA4's optional GPU extra.
+| Ticket | Path | You leave behind |
+| --- | --- | --- |
+| [git](issues/00-git.md) | `learning/README.md` | first PR, review loop |
+| [uv](issues/01-uv.md) | `learning/uv/` | uv + in-file deps |
+| [taskfile](issues/02-taskfile.md) | `learning/taskfile/` | Task install + a small Taskfile |
+| [ra-types](issues/03-ra-types.md) | `learning/ra-types/answers.md` | problem types for these files |
+| [pa-knn](issues/04-pa-knn.md) | `learning/pa-knn/kNN.py` | class `KNN`, leave-one-out |
+| [ra-scaling](issues/05-ra-scaling.md) | `learning/ra-scaling/answers.md` | why scale, how not to leak |
+| [pa-scaled](issues/06-pa-scaled.md) | `learning/pa-scaled/kNN_scaled.py` | `ScaledKNN`, `--normalize`, `--task` |
+| [pa-metrics](issues/07-pa-metrics.md) | `learning/pa-metrics/kNN_report.py` | `ReportingKNN`, baseline, plots |
+| [ra-selection](issues/08-ra-selection.md) | `learning/ra-selection/answers.md` | validation vs test |
+| [pa-selection](issues/09-pa-selection.md) | `learning/pa-selection/kNN_select.py` | `k` sweep, vote fractions |
+| [ra-ensembles](issues/10-ra-ensembles.md) | `learning/ra-ensembles/answers.md` | bagging vs boosting |
+| [pa-ensemble](issues/11-pa-ensemble.md) | `learning/pa-ensemble/kNN_ensemble.py` | bagged `ScaledKNN` |
+| [ra-streaming](issues/12-ra-streaming.md) | `learning/ra-streaming/answers.md` | batch vs stream |
+| [ra-hardware](issues/13-ra-hardware.md) | `learning/ra-hardware/answers.md` | what to put on a GPU |
+| [pa-gpu](issues/14-pa-gpu.md) | `learning/pa-gpu/knn_gpu.py` | array / GPU `leave_one_out` |
+| [ra-drift](issues/15-ra-drift.md) | `learning/ra-drift/answers.md` | drift + prequential |
+| [ra-imbalance](issues/16-ra-imbalance.md) | `learning/ra-imbalance/answers.md` | imbalance that moves |
+| [ra-cost](issues/17-ra-cost.md) | `learning/ra-cost/answers.md` | weighted `vote` |
+| [pa-online](issues/18-pa-online.md) | `learning/pa-online/online_knn.py` | window + `--weighted-vote` |
+| [lr-jetson](issues/19-lr-jetson.md) | `learning/lr-jetson/AI_Jetson_Survey.md` | edge literature |
+| [lr-slam](issues/20-lr-slam.md) | `learning/lr-slam/ROS_Jetson_SLAM.md` | SLAM vs classification |
 
 ```bash
-task pa1 STUDENT=your_name
-task pa1 STUDENT=your_name DATA=learning/resources/data/medium.arff K=5
-task pa4:gpu STUDENT=your_name
+task uv
+task taskfile
+task knn
+task scaled NORMALIZE=zscore TASK=binary
+task metrics
+task selection
+task ensemble
+task gpu
+task online
+task online:weighted
 task generate-stream
 ```
 
+Do not use scikit-learn (or similar) to implement the classifier.
+
 ## Data
 
-Files in `learning/resources/data/`:
+See `learning/resources/data/README.md`.
 
 | File | Role |
 | --- | --- |
-| `small.arff` | default stationary set (PA1–PA4) |
-| `medium.arff` | larger stationary set |
-| `large.arff` | stress / GPU comparison |
-| `small_stream.arff` | 800 instances, sudden drift at 400 (PA5) |
-| `medium_stream.arff` | 2000 instances, sudden drift at 1000 (PA5) |
+| `small.arff` | default stationary set (Ecoli-style localization, 8 classes) |
+| `medium.arff` | larger stationary set (white wine quality, 7 classes) |
+| `large.arff` | stress / GPU comparison (same schema as `medium.arff`) |
+| `small_stream.arff` | 800 instances, sudden drift at 400 (`pa-online`) |
+| `medium_stream.arff` | 2000 instances, sudden drift at 1000 (`pa-online`) |
 
-`learning/resources/generate_stream.py` rebuilds the stream files from the
-stationary ARFFs (`task generate-stream`). Header comments on each stream file
-document the seed, drift index, class weights, and label map.
+`learning/resources/generate_stream.py` rebuilds the stream files
+(`task generate-stream`). Header comments document seed, drift index,
+weights, and the label map.
 
-## Using this as a GitHub template
+## Mentors: reviewing work
 
-1. On GitHub, mark this repository as a template (Settings → Template repository).
-2. Use it to start a new mentee repo.
-3. Recreate the assignment issues from `issues/` with:
-
-```bash
-gh auth login
-python3 scripts/create_issues.py
-```
+Tickets are procedures. After each PR, check that the new class
+**subclasses** the previous one and did not paste a second distance function.
+Common failures: query row in leave-one-out, scaler fit on the whole file,
+accuracy-only reports, unscaled wine distances, copying `pa-knn` instead of
+`import_pa`. Stretch goals are optional; do not block a PR that skipped
+them. Do block a PR that broke the required class API in order to attempt
+one.
