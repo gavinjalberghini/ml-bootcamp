@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Create GitHub issues from issues/*.md using the gh CLI.
-# Idempotent: skips a title that already exists (open or closed).
+# Create GitHub issues from issues/NN-*.md using the gh CLI.
+# Index files (README.md) are not tickets. Idempotent: skips a title
+# that already exists (open or closed).
 #
 #   scripts/create_issues.sh --repo owner/name
 #   scripts/create_issues.sh --dry-run
@@ -40,8 +41,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 shopt -s nullglob
-files=("$ROOT"/issues/*.md)
-[[ ${#files[@]} -gt 0 ]] || die "no issue files found in issues/"
+files=("$ROOT"/issues/[0-9][0-9]-*.md)
+[[ ${#files[@]} -gt 0 ]] || die "no issue files found in issues/ (expected NN-slug.md)"
 
 existing=""
 if [[ "$DRY_RUN" -eq 0 ]]; then

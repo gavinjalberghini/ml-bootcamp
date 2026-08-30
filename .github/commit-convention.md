@@ -54,6 +54,7 @@ ra-cost
 lr-jetson
 lr-slam
 repo
+docs
 data
 ci
 ```
